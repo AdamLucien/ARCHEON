@@ -69,7 +69,7 @@ export const en = {
       "ARCHEON is a graph-native, auditable simulation system — integrating physical reality, capital flows, and narrative dynamics into one causal model.",
     blocks: [
       {
-        id: "graph",
+        id: "graph" as const,
         title: "Graph-Native Causal Engine (Neo4j)",
         body:
           "The core is a living graph, not a document warehouse. It models reality as a network of relationships evolving in time.",
@@ -82,19 +82,19 @@ export const en = {
         ],
       },
       {
-        id: "truth",
+        id: "truth" as const,
         title: "Single Source of Truth (SSoT)",
         body:
           "Validated facts are stored once; all views are generated. This keeps provenance explicit and decisions fully auditable.",
       },
       {
-        id: "simulation",
+        id: "simulation" as const,
         title: "Multilevel Level-of-Detail (LOD)",
         body:
           "From LOD‑0 to LOD‑4, the model zooms from macro state to individual transactions without losing context.",
       },
       {
-        id: "noxis",
+        id: "noxis" as const,
         title: "NOXIS: Narrative Intelligence (OSINT, rights-first)",
         body:
           "Not keyword monitoring. Not individual tracking. NOXIS maps narrative structure and spread — at system scale.",

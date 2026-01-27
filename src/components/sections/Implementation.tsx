@@ -167,7 +167,7 @@ export default function Implementation({
 }: ImplementationProps) {
   const [activeId, setActiveId] = useState<string>(steps[0]?.id ?? "step-1");
   const tabsRef = useRef<Array<HTMLButtonElement | null>>([]);
-  const detailRef = useRef<HTMLDivElement | null>(null);
+  const detailRef = useRef<HTMLDivElement>(null!);
   const hasMounted = useRef(false);
 
   const activeStep = useMemo(

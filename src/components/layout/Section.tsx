@@ -21,7 +21,7 @@ export function Section({
   showSeparator = true,
   ariaLabelledBy,
 }: SectionProps) {
-  const sectionRef = useRef<HTMLElement | null>(null);
+  const sectionRef = useRef<HTMLElement>(null!);
 
   useEffect(() => {
     const sectionEl = sectionRef.current;

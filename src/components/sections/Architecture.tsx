@@ -147,7 +147,7 @@ function ArchitectureBlockItem({
   block: ArchitectureBlock;
   onActive: (id: ArchitectureBlock["id"]) => void;
 }) {
-  const ref = useRef<HTMLDivElement | null>(null);
+  const ref = useRef<HTMLDivElement>(null!);
   const isInView = useInView(ref, { amount: 0.5, margin: "-10% 0px -60% 0px" });
 
   useEffect(() => {
@@ -205,7 +205,7 @@ function ArchitectureMobile({
 }: ArchitectureProps) {
   void reduceMotion;
   const [activeIndex, setActiveIndex] = useState(0);
-  const scrollRef = useRef<HTMLDivElement | null>(null);
+  const scrollRef = useRef<HTMLDivElement>(null!);
 
   const orderedBlocks = useMemo(() => {
     const map = new Map(blocks.map((block) => [block.id, block]));

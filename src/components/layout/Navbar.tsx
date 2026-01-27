@@ -49,10 +49,10 @@ export default function Navbar({
   wordmarkLabel,
 }: NavbarProps) {
   const [menuOpen, setMenuOpen] = useState(false);
-  const menuRef = useRef<HTMLDivElement | null>(null);
-  const menuToggleRef = useRef<HTMLButtonElement | null>(null);
+  const menuRef = useRef<HTMLDivElement>(null!);
+  const menuToggleRef = useRef<HTMLButtonElement>(null!);
   const prefersReducedMotion = useReducedMotionPref();
-  const navRef = useRef<HTMLDivElement | null>(null);
+  const navRef = useRef<HTMLDivElement>(null!);
   const linkRefs = useRef<Record<string, HTMLAnchorElement | null>>({});
   const [underline, setUnderline] = useState({ left: 0, width: 0, ready: false });
 

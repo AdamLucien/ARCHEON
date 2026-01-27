@@ -68,7 +68,7 @@ export const cz = {
       "ARCHEON je grafově nativní, auditovatelný simulační systém — integruje fyzickou realitu, toky kapitálu a narativní dynamiku do jednoho kauzálního modelu.",
     blocks: [
       {
-        id: "graph",
+        id: "graph" as const,
         title: "Grafově nativní kauzální engine (Neo4j)",
         body:
           "Jádrem je živý graf, ne sklad dokumentů. Modeluje realitu jako síť vztahů, které se v čase mění.",
@@ -81,19 +81,19 @@ export const cz = {
         ],
       },
       {
-        id: "truth",
+        id: "truth" as const,
         title: "Single Source of Truth (SSoT)",
         body:
           "Validovaná fakta jsou uložená jednou; všechny pohledy jsou generované. Rozhodování zůstává auditovatelné a dohledatelné.",
       },
       {
-        id: "simulation",
+        id: "simulation" as const,
         title: "Multilevel Level-of-Detail (LOD)",
         body:
           "Od LOD‑0 po LOD‑4 model plynule přechází od makra k transakci bez ztráty kontextu.",
       },
       {
-        id: "noxis",
+        id: "noxis" as const,
         title: "NOXIS: narativní inteligence (OSINT, rights-first)",
         body:
           "Nejde o keyword monitoring ani sledování jednotlivců. NOXIS mapuje strukturu a šíření narativů v měřítku systému.",

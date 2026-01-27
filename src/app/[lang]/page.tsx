@@ -24,12 +24,14 @@ export function generateStaticParams() {
   return languageList.map((lang) => ({ lang }));
 }
 
-export function generateMetadata({
+export async function generateMetadata({
   params,
 }: {
-  params: { lang: LanguageCode };
-}): Metadata {
-  const lang = languageList.includes(params.lang) ? params.lang : "cz";
+  params?: Promise<{ lang?: string | string[] }>;
+}): Promise<Metadata> {
+  const resolvedParams = await params;
+  const rawLang = typeof resolvedParams?.lang === "string" ? resolvedParams.lang : undefined;
+  const lang = rawLang && isLanguageCode(rawLang) ? rawLang : "cz";
   const isCz = lang === "cz";
   const title = isCz ? DEFAULT_TITLES.cz : DEFAULT_TITLES.en;
   const description = isCz ? DEFAULT_DESCRIPTIONS.cz : DEFAULT_DESCRIPTIONS.en;
@@ -88,15 +90,12 @@ export function generateMetadata({
   };
 }
 
-type LangPageProps = {
-  params: Promise<{
-    lang: LanguageCode;
-  }>;
-};
+const isLanguageCode = (value: string): value is LanguageCode =>
+  languageList.includes(value as LanguageCode);
 
-export default async function LangPage({ params }: LangPageProps) {
+export default async function LangPage({ params }: PageProps<"/[lang]">) {
   const resolvedParams = await params;
-  const lang = languageList.includes(resolvedParams.lang) ? resolvedParams.lang : "en";
+  const lang = isLanguageCode(resolvedParams.lang) ? resolvedParams.lang : "en";
   const content = lang === "cz" ? cz : en;
   const isCz = lang === "cz";
   const jsonLd = {

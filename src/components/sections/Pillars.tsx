@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef } from "react";
-import type { CSSProperties } from "react";
+import type { CSSProperties, SVGProps } from "react";
 import clsx from "clsx";
 import { pillars } from "../../../content/pillars";
 import type { PillarDefinition } from "../../../content/pillars";
@@ -34,7 +34,7 @@ export type PillarsProps = {
   srSummary: string;
 };
 
-const icons: Record<PillarDefinition["id"], React.ComponentType<{ className?: string }>> = {
+const icons: Record<PillarDefinition["id"], React.ComponentType<SVGProps<SVGSVGElement>>> = {
   resources: PillarResourcesIcon,
   services: PillarServicesIcon,
   citizens: PillarCitizensIcon,
@@ -79,7 +79,7 @@ export default function SevenPillarsSection({
   srSummary,
 }: PillarsProps) {
   void reduceMotion;
-  const sectionRef = useRef<HTMLElement | null>(null);
+  const sectionRef = useRef<HTMLDivElement>(null!);
   const activeId = pinnedPillarId ?? hoveredPillarId;
 
   useEffect(() => {

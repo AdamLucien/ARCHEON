@@ -157,7 +157,7 @@ export default function UseCasesSection({
   const scenarios = useCases;
   const [activeId, setActiveId] = useState<UseCaseId>(scenarios[0]?.id ?? "antiFraud");
   const tabsRef = useRef<Array<HTMLButtonElement | null>>([]);
-  const detailRef = useRef<HTMLDivElement | null>(null);
+  const detailRef = useRef<HTMLDivElement>(null!);
   const hasMounted = useRef(false);
 
   const activeScenario = useMemo(
