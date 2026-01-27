@@ -1,0 +1,5 @@
+1:"$Sreact.fragment"
+2:I[7121,[],""]
+3:I[4581,[],""]
+:HL["/_next/static/css/ca835a3da092cf1e.css","style"]
+0:{"buildId":"EXpCsEtOHQuKJaEk-0CzQ","rsc":["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/_next/static/css/ca835a3da092cf1e.css","precedence":"next"}]],["$","html",null,{"lang":"en","children":[["$","head",null,{"children":[["$","link",null,{"rel":"icon","type":"image/png","href":"/favicons/favicon-96x96.png","sizes":"96x96"}],["$","link",null,{"rel":"icon","type":"image/svg+xml","href":"/favicons/favicon.svg"}],["$","link",null,{"rel":"shortcut icon","href":"/favicons/favicon.ico"}],["$","link",null,{"rel":"apple-touch-icon","sizes":"180x180","href":"/favicons/apple-touch-icon.png"}],["$","meta",null,{"name":"apple-mobile-web-app-title","content":"ΛRCHΞON"}],["$","link",null,{"rel":"manifest","href":"/favicons/site.webmanifest"}]]}],["$","body",null,{"className":"__variable_e7bc25 antialiased","children":["$","$L2",null,{"parallelRouterKey":"children","template":["$","$L3",null,{}]}]}]]}]]}],"loading":null,"isPartial":false}
