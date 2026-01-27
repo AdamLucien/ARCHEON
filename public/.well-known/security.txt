@@ -1,0 +1,3 @@
+Contact: mailto:archeon@lucien.technology
+Preferred-Languages: en, cs
+Canonical: https://archeon.lucien.technology/.well-known/security.txt

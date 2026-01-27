@@ -1,0 +1,109 @@
+@import "tailwindcss";
+
+:root {
+  --color-background: #121212;
+  --color-foreground: #fafafa;
+  --color-secondary: rgba(250, 250, 250, 0.72);
+  --color-border: rgba(250, 250, 250, 0.08);
+  --navbar-height: 72px;
+  --section-gap: 5rem;
+  --contrast-scale: 1;
+  --font-mono: "SF Mono", "Menlo", "IBM Plex Mono", "Courier New", monospace;
+  --text-h1: clamp(2.4rem, 3.4vw, 3.4rem);
+  --text-h2: clamp(1.8rem, 2.2vw, 2.4rem);
+  --text-body: 1rem;
+  --text-body-small: 0.95rem;
+  --text-label: 0.65rem;
+  --tracking-label: 0.25em;
+  --leading-body: 1.7;
+  --leading-tight: 1.2;
+  --radius-card: 14px;
+  --radius-soft: 10px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: var(--navbar-height);
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans), system-ui, -apple-system, "Segoe UI",
+    "Helvetica Neue", Arial, sans-serif;
+  line-height: var(--leading-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body.calm-mode {
+  filter: brightness(0.92);
+  --contrast-scale: 0.82;
+}
+
+body.calm-mode .hoverable {
+  transition: none !important;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-foreground);
+  outline-offset: 2px;
+}
+
+.section-container {
+  width: min(1120px, 100% - 2.5rem);
+  margin: 0 auto;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+html[data-reveal="true"] [data-reveal-item] {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 500ms ease, transform 500ms ease;
+  will-change: opacity, transform;
+}
+
+html[data-reveal="true"] [data-reveal-item].is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto;
+  }
+  html[data-reveal="true"] [data-reveal-item] {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
