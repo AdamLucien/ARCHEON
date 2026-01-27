@@ -1,10 +1,14 @@
-import type { IconProps } from "./icon-types";
-import FamilySvg from "../../../brand/pillar_icons/family.svg";
+import type { ImageIconProps } from "./icon-types";
 
-export default function PillarFamilyIcon({ "aria-label": ariaLabel, ...props }: IconProps) {
-  const ariaProps = ariaLabel
-    ? { role: "img", "aria-label": ariaLabel }
-    : { "aria-hidden": "true" as const };
+const ICON_SRC = "/brand/pillar_icons/family.svg";
 
-  return <FamilySvg {...props} {...ariaProps} focusable="false" />;
+export default function PillarFamilyIcon({
+  alt,
+  "aria-label": ariaLabel,
+  ...props
+}: ImageIconProps) {
+  const label = ariaLabel ?? alt ?? "";
+  const ariaProps = label ? { "aria-label": label } : { "aria-hidden": "true" as const };
+
+  return <img src={ICON_SRC} alt={label} {...props} {...ariaProps} />;
 }

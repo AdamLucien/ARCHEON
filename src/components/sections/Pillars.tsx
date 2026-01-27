@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef } from "react";
-import type { CSSProperties, SVGProps } from "react";
+import type { CSSProperties } from "react";
 import clsx from "clsx";
 import { pillars } from "../../../content/pillars";
 import type { PillarDefinition } from "../../../content/pillars";
@@ -15,6 +15,7 @@ import PillarFamilyIcon from "../icons/PillarFamilyIcon";
 import PillarCommunicationIcon from "../icons/PillarCommunicationIcon";
 import PillarInvestmentsIcon from "../icons/PillarInvestmentsIcon";
 import PillarResponsibilityIcon from "../icons/PillarResponsibilityIcon";
+import type { ImageIconProps } from "../icons/icon-types";
 
 type Language = "en" | "cz";
 
@@ -34,7 +35,7 @@ export type PillarsProps = {
   srSummary: string;
 };
 
-const icons: Record<PillarDefinition["id"], React.ComponentType<SVGProps<SVGSVGElement>>> = {
+const icons: Record<PillarDefinition["id"], React.ComponentType<ImageIconProps>> = {
   resources: PillarResourcesIcon,
   services: PillarServicesIcon,
   citizens: PillarCitizensIcon,
@@ -174,12 +175,7 @@ export default function SevenPillarsSection({
                     className="inline-flex h-11 w-11 items-center justify-center rounded-[14px] border border-white/5 bg-[#0c0c0c]"
                     style={{ color: iconColor }}
                   >
-                    <Icon
-                      className="h-6 w-6"
-                      role="img"
-                      aria-label={pillar.names[lang]}
-                      focusable="false"
-                    />
+                    <Icon className="h-6 w-6" alt={pillar.names[lang]} />
                   </span>
                   {pillar.id === "communication" ? (
                     <span
