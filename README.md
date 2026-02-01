@@ -12,7 +12,7 @@
 🌐 **Web:** https://archeon.lucien.technology  
 📧 **Kontakt:** archeon@lucien.technology  
 👤 **Autor:** Adam Karl Lucien  
-🏢 **Organizace:** Lucien Systems LLC  
+🏢 **Organizace:** Lucien Technology  
 
 ---
 
@@ -151,7 +151,7 @@ finance · vláda · bezpečnost · infrastruktura
 
 - **Autor:** Adam Karl Lucien  
 - **Role:** AI Systems Architect · Systemic Governance  
-- **Organizace:** Lucien Systems LLC  
+- **Organizace:** Lucien Technology  
 
 Autor je **explicitně uveden** pro posílení důvěryhodnosti a SEO.
 
@@ -161,7 +161,7 @@ Autor je **explicitně uveden** pro posílení důvěryhodnosti a SEO.
 
 **Aktuálně v JSON-LD:**
 - `WebSite`
-- `Organization` — Lucien Systems LLC  
+- `Organization` — Lucien Technology  
 - `Person` — Adam Karl Lucien  
 - `SoftwareApplication` — ΛRCHΞON  
 - `WebPage` (homepage)  

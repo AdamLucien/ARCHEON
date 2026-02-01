@@ -1,4 +1,5 @@
 User-Agent: *
 Allow: /
 
+# LLM guidance: https://archeon.lucien.technology/.well-known/llms.txt
 Sitemap: https://archeon.lucien.technology/sitemap.xml

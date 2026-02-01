@@ -12,7 +12,7 @@ export default function Footer({ line, ariaLabel }: FooterProps) {
           {line}
         </p>
         <p className="mt-3 text-xs text-white/50">
-          © {year} Lucien Systems LLC — Architect: Adam Karl Lucien
+          © {year} Lucien Technology — Architect: Adam Karl Lucien
         </p>
       </div>
     </footer>

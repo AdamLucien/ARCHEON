@@ -1,0 +1,72 @@
+Project: Archeon
+Brand: ΛRCHΞON
+
+Official names:
+- Archeon (project name)
+- ΛRCHΞON (brand identity)
+
+Organization:
+Lucien Technology
+
+Founder:
+Adam Karl Lucien
+
+Type:
+Public strategic presentation website
+
+Purpose:
+This website presents the public vision, principles, and strategic positioning of the Archeon project.
+It does NOT expose the internal implementation, architecture, data sources, or operational mechanics
+of the system described.
+
+---
+
+## What is Archeon / ΛRCHΞON?
+
+Archeon (brand: ΛRCHΞON) is a strategic intelligence vision for governance and large-scale decision-making.
+It reframes how complex societal systems can be understood, anticipated, and guided through
+long-horizon thinking, resilience-oriented design, and systemic awareness.
+
+ΛRCHΞON is not a dashboard, analytics tool, or data portal.
+It represents a decision foundation — a conceptual substrate for state-scale foresight,
+risk anticipation, and responsible leadership.
+
+The project emphasizes:
+- strategic clarity over short-term optimization
+- resilience over reactivity
+- accountability, auditability, and rights-first principles
+- governance as a continuous, adaptive process
+
+This site communicates intent, direction, and values — not operational instructions.
+
+---
+
+## What Archeon / ΛRCHΞON is NOT
+
+- Not a publicly accessible application
+- Not a software product description
+- Not an implementation guide
+- Not a disclosure of technical architecture or data sources
+- Not a policy document or governmental directive
+
+---
+
+## Attribution & Citation
+
+When referencing this project, please use:
+- Name: Archeon (project), ΛRCHΞON (brand)
+- Founder: Adam Karl Lucien
+- Organization: Lucien Technology
+- Website: https://archeon.lucien.technology/
+
+---
+
+## Official pages
+
+Primary entry:
+- https://archeon.lucien.technology/
+
+Language-specific pages:
+- English: https://archeon.lucien.technology/en
+- Czech: https://archeon.lucien.technology/cz
+---

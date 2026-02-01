@@ -1,12 +1,12 @@
 export const SITE_URL = "https://archeon.lucien.technology";
 export const SITE_NAME = "ΛRCHΞON";
 export const AUTHOR_NAME = "Adam Karl Lucien";
-export const ORG_NAME = "Lucien Systems LLC";
+export const ORG_NAME = "Lucien Technology";
 export const CONTACT_EMAIL = "archeon@lucien.technology";
 
 export const ROOT_TITLE = "ΛRCHΞON — Strategic Intelligence Architecture for Governance";
 export const ROOT_DESCRIPTION =
-  "ΛRCHΞON is a strategic intelligence framework for state-level decision-making, resilience planning, and long-horizon foresight. A public vision by Lucien Systems LLC.";
+  "ΛRCHΞON is a strategic intelligence framework for state-level decision-making, resilience planning, and long-horizon foresight. A public vision by Lucien Technology.";
 
 export const DEFAULT_TITLES = {
   cz: "ΛRCHΞON — Strategická inteligence pro rozhodování státu",
