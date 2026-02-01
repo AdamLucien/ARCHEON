@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { SITE_URL } from "../lib/seo";
+import { absoluteUrl } from "../lib/seo";
 
 export const dynamic = "force-static";
 
@@ -7,15 +7,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
   return [
     {
-      url: SITE_URL,
+      url: absoluteUrl("/"),
       lastModified: now,
     },
     {
-      url: `${SITE_URL}/cz`,
+      url: absoluteUrl("/cz"),
       lastModified: now,
     },
     {
-      url: `${SITE_URL}/en`,
+      url: absoluteUrl("/en"),
       lastModified: now,
     },
   ];
