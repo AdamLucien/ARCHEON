@@ -15,7 +15,6 @@ export const metadata: Metadata = {
   applicationName: SITE_NAME,
   referrer: "strict-origin-when-cross-origin",
   manifest: "/manifest.webmanifest",
-  themeColor: "#121212",
   authors: [{ name: AUTHOR_NAME }],
   robots: {
     index: true,
@@ -45,6 +44,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
+  themeColor: "#121212",
 };
 
 export default async function RootLayout({

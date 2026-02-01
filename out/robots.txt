@@ -1,5 +1,7 @@
-User-Agent: *
+User-agent: *
 Allow: /
 
-# LLM guidance: https://archeon.lucien.technology/.well-known/llms.txt
 Sitemap: https://archeon.lucien.technology/sitemap.xml
+
+# LLM guidance:
+# https://archeon.lucien.technology/.well-known/llms.txt
