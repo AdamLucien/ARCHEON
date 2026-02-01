@@ -14,6 +14,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   applicationName: SITE_NAME,
   referrer: "strict-origin-when-cross-origin",
+  manifest: "/manifest.webmanifest",
   themeColor: "#121212",
   authors: [{ name: AUTHOR_NAME }],
   robots: {
