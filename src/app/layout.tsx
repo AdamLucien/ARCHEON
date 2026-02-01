@@ -46,14 +46,16 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
   params,
 }: Readonly<{
   children: React.ReactNode;
-  params?: { lang?: string };
+  params?: Promise<{ lang?: string | string[] }>;
 }>) {
-  const pageKey = params?.lang === "cz" ? "cz" : params?.lang === "en" ? "en" : "root";
+  const resolvedParams = params ? await params : undefined;
+  const rawLang = typeof resolvedParams?.lang === "string" ? resolvedParams.lang : undefined;
+  const pageKey = rawLang === "cz" ? "cz" : rawLang === "en" ? "en" : "root";
   const htmlLang = pageKey === "cz" ? "cs" : "en";
   const jsonLd = buildJsonLd(pageKey);
   return (
