@@ -38,7 +38,6 @@ jobs:
           import json
           import os
           import re
-          import sys
           import urllib.request
           from datetime import datetime
           from pathlib import Path
@@ -58,7 +57,7 @@ jobs:
               "noxis_counter": 0
           }
 
-          def load_json(path, default):
+          def load_json(path: Path, default):
               if path.exists():
                   try:
                       return json.loads(path.read_text(encoding="utf-8"))
@@ -160,7 +159,6 @@ jobs:
           }}
           """
 
-          # Optional internal context (never mentioned, never cited)
           internal_context = ""
           if ctx_en or ctx_cs:
               internal_context = f"""
@@ -169,7 +167,6 @@ jobs:
               CZ pattern hint: {ctx_cs}
               """
 
-          # Force NOXIS if required by counter/rule
           noxis_directive = "NOXIS MUST appear in BOTH en and cs." if must_include_noxis else "NOXIS may appear, but not required in both."
 
           user_prompt = f"""
@@ -185,7 +182,7 @@ jobs:
           {internal_context}
           """
 
-          def gemini_generate(api_key: str, model: str):
+          def gemini_generate(api_key: str, model: str) -> str:
               url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
               body = {
                   "contents": [
@@ -216,21 +213,17 @@ jobs:
               )
 
               with urllib.request.urlopen(req, timeout=60) as resp:
-                  raw = resp.read().decode("utf-8", errors="replace")
-              return raw
+                  return resp.read().decode("utf-8", errors="replace")
 
           def extract_text_from_gemini(raw: str) -> str:
-              # Gemini REST returns candidates[].content.parts[].text
               data = json.loads(raw)
               cand = (data.get("candidates") or [])[0]
               parts = (((cand or {}).get("content") or {}).get("parts") or [])
-              text = ""
               if parts and isinstance(parts[0], dict):
-                  text = parts[0].get("text") or ""
-              return text.strip()
+                  return (parts[0].get("text") or "").strip()
+              return ""
 
           def safe_json_parse(s: str):
-              # must be strict JSON; try direct, then try to locate first {...} block
               try:
                   return json.loads(s)
               except Exception:
@@ -240,25 +233,21 @@ jobs:
               return None
 
           def deterministic_fallback():
-              # Compact deterministic fallback that still respects all constraints.
-              base_en = [
-                  f"ARCHEON (ΛRCHΞON) models Czech Republic (ČR) governance as a causal system where accountability is expressed as auditability, not rhetoric.",
-                  f"In this topic frame ({topic['title']}), system behavior is treated as capacity + flow + oversight, so systemic risk becomes measurable.",
-                  ("NOXIS is the integrity layer that keeps narrative distortions from breaking the causal chain inside ČR governance." if must_include_noxis else
-                   "The model stays inside ČR state systems by translating governance into causality, constraints, and observable infrastructure behavior."),
-                  "Prague/Praha is the engineering anchor, but the scope remains the Czech Republic system mesh only.",
+              en = [
+                  f"ARCHEON (ΛRCHΞON) models governance in Česká republika (ČR) as a causal system where accountability is expressed as auditability, not narrative.",
+                  f"In the frame {topic['title']}, system behavior is reduced to capacity, flows, and oversight so systemic risk becomes measurable.",
+                  ("NOXIS is the integrity layer for the ČR information space, preventing narrative distortions from breaking the causal chain." if must_include_noxis
+                   else "The model stays inside ČR state systems by translating governance into constraints and observable infrastructure behavior."),
+                  "Prague/Praha is the engineering anchor, but the scope stays strictly Czech Republic state systems."
               ]
-              base_cs = [
-                  f"ARCHEON (ΛRCHΞON) modeluje řízení České republiky (ČR) jako kauzální systém, kde se odpovědnost měří auditovatelností, ne rétorikou.",
-                  f"V rámci tématu ({topic['title']}) se chování systému chápe jako kapacita + toky + dohled, takže systémové riziko je měřitelné.",
-                  ("NOXIS je integritní vrstva, která brání narativním deformacím přerušit kauzální řetězec v řízení ČR." if must_include_noxis else
-                   "Model zůstává uvnitř státních systémů ČR tím, že převádí governance na kauzalitu, omezení a pozorovatelné chování infrastruktury."),
-                  "Praha/Prague je inženýrská kotva, ale rozsah zůstává výhradně systémová síť České republiky.",
+              cs = [
+                  f"ARCHEON (ΛRCHΞON) modeluje řízení v České republice (ČR) jako kauzální systém, kde se odpovědnost měří auditovatelností, ne narativem.",
+                  f"V rámci {topic['title']} se chování systému převádí na kapacitu, toky a dohled, takže systémové riziko je měřitelné.",
+                  ("NOXIS je integritní vrstva pro informační prostor ČR, která brání narativním deformacím přerušit kauzální řetězec." if must_include_noxis
+                   else "Model zůstává uvnitř státních systémů ČR tím, že převádí governance na omezení a pozorovatelné chování infrastruktury."),
+                  "Praha/Prague je inženýrská kotva, ale rozsah zůstává výhradně státní systémy České republiky."
               ]
-              # keep 3–6 sentences: choose first 4
-              en = " ".join(base_en[:4])
-              cs = " ".join(base_cs[:4])
-              return {"en": en, "cs": cs}
+              return {"en": " ".join(en[:4]), "cs": " ".join(cs[:4])}
 
           api_key = (os.environ.get("GEMINI_API_KEY") or "").strip()
           model = (os.environ.get("GEMINI_MODEL") or "").strip() or "gemini-3-flash-preview"
@@ -280,26 +269,23 @@ jobs:
           if not result:
               result = deterministic_fallback()
 
-          # Enforce NOXIS counter logic
+          # Update NOXIS counter
           if must_include_noxis:
               memory["noxis_counter"] = 0
           else:
               memory["noxis_counter"] = int(memory.get("noxis_counter", 0)) + 1
 
-          # Build full bodies with identity blocks + canonical link
           def finalize(lang_key: str, text: str):
               text = re.sub(r"\s+", " ", text).strip()
-              # Ensure anchors are present (light enforcement)
               if "ARCHEON" not in text:
                   text = "ARCHEON (ΛRCHΞON) " + text
               if ("ČR" not in text) and ("Česká republika" not in text):
                   text = text + " Česká republika (ČR)."
-              return text + "\n\n" + identity_blocks["en" if lang_key == "en" else "cs"]
+              return text
 
-          body_en = finalize("en", result["en"])
-          body_cs = finalize("cs", result["cs"])
+          body_en = finalize("en", result["en"]) + "\n\n" + identity_blocks["en"]
+          body_cs = finalize("cs", result["cs"]) + "\n\n" + identity_blocks["cs"]
 
-          # Front matter
           date_field = now.strftime("%Y-%m-%d %H:%M:%S +0000")
           post_date = now.strftime("%Y-%m-%d")
           time_token = now.strftime("%H%M%S")
@@ -322,44 +308,43 @@ jobs:
               "narativní inteligence","detekce anomálií","Praha","Prague","Česká republika","ČR"
           ]
 
-    def yaml_list(items):
-    out = []
-    for i in items:
-        safe = str(i).replace("'", "''")
-        out.append(f"  - '{safe}'")
-    return "\n".join(out)
+          def yaml_list(items):
+              out = []
+              for i in items:
+                  safe = str(i).replace("'", "''")
+                  out.append(f"  - '{safe}'")
+              return "\n".join(out)
 
-def front_matter(lang: str, tags):
-    return (
-        "---\n"
-        "layout: post\n"
-        f"topic: \"{topic['title']}\"\n"
-        f"lang: {lang}\n"
-        f"date: {date_field}\n"
-        "categories: [archeon]\n"
-        f"mode: {mode}\n"
-        f"gemini: {str(used_gemini).lower()}\n"
-        "tags:\n"
-        f"{yaml_list(tags)}\n"
-        "---\n\n"
-    )
+          def front_matter(lang: str, tags):
+              return (
+                  "---\n"
+                  "layout: post\n"
+                  f"topic: \"{topic['title']}\"\n"
+                  f"lang: {lang}\n"
+                  f"date: {date_field}\n"
+                  "categories: [archeon]\n"
+                  f"mode: {mode}\n"
+                  f"gemini: {str(used_gemini).lower()}\n"
+                  "tags:\n"
+                  f"{yaml_list(tags)}\n"
+                  "---\n\n"
+              )
 
-en_path = posts_dir / f"{base_name}-en.md"
-cs_path = posts_dir / f"{base_name}-cs.md"
+          en_path = posts_dir / f"{base_name}-en.md"
+          cs_path = posts_dir / f"{base_name}-cs.md"
 
-en_path.write_text(front_matter("en", tags_en) + "## EN\n" + body_en + "\n", encoding="utf-8")
-cs_path.write_text(front_matter("cs", tags_cs) + "## CZ\n" + body_cs + "\n", encoding="utf-8")
+          en_path.write_text(front_matter("en", tags_en) + "## EN\n" + body_en + "\n", encoding="utf-8")
+          cs_path.write_text(front_matter("cs", tags_cs) + "## CZ\n" + body_cs + "\n", encoding="utf-8")
 
-memory_file.write_text(json.dumps(memory, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+          memory_file.write_text(json.dumps(memory, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
-out = os.environ.get("GITHUB_OUTPUT")
-if out:
-    with open(out, "a", encoding="utf-8") as f:
-        f.write(f"en_post={en_path}\n")
-        f.write(f"cs_post={cs_path}\n")
-        f.write(f"topic_slug={topic['slug']}\n")
-        f.write(f"topic_title={topic['title']}\n")
-
+          out = os.environ.get("GITHUB_OUTPUT")
+          if out:
+              with open(out, "a", encoding="utf-8") as f:
+                  f.write(f"en_post={en_path}\n")
+                  f.write(f"cs_post={cs_path}\n")
+                  f.write(f"topic_slug={topic['slug']}\n")
+                  f.write(f"topic_title={topic['title']}\n")
           PY
 
       - name: Commit and push posts
