@@ -1,1 +1,0 @@
-self.__NEXT_FONT_MANIFEST='{"pages":{},"app":{"/Users/adamkarllucien/archeon_web_github/ARCHEON/src/app/layout":["static/media/9e7b0a821b9dfcb4-s.p.woff2","static/media/636a5ac981f94f8b-s.p.woff2"]},"appUsingSizeAdjust":true,"pagesUsingSizeAdjust":false}';
