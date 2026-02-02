@@ -1,369 +1,321 @@
-name: ARCHEON autopost
+name: ARCHEON autopost (Gemini + fallback)
 
 on:
   schedule:
-    - cron: '*/30 * * * *'
+    - cron: "*/30 * * * *"
   workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: archeon-autopost
+  cancel-in-progress: false
 
 jobs:
   publish:
-    permissions:
-      contents: write
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
 
-      - name: Generate bilingual posts
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Generate bilingual posts (Gemini with deterministic fallback)
         id: create_posts
+        shell: bash
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: ${{ secrets.GEMINI_MODEL }}
         run: |
           set -euo pipefail
+
           python - <<'PY'
           import json
           import os
+          import re
+          import urllib.request
           from datetime import datetime
           from pathlib import Path
 
           docs = Path("docs")
+          posts_dir = docs / "_posts"
+          posts_dir.mkdir(parents=True, exist_ok=True)
+
           memory_file = docs / "topic-memory.json"
           context_file = docs / "contextual-input.json"
-          default_memory = {"last_index": -1, "cz_observation_date": "", "post_count": 0, "phase": 1}
-          if memory_file.exists():
-              try:
-                  memory = json.loads(memory_file.read_text())
-              except json.JSONDecodeError:
-                  memory = default_memory.copy()
-          else:
-              memory = default_memory.copy()
-          memory.setdefault("phase", 1)
 
+          default_memory = {
+              "last_index": -1,
+              "cz_observation_date": "",
+              "post_count": 0,
+              "phase": 1,
+              "noxis_counter": 0
+          }
+
+          def load_json(path: Path, default):
+              if path.exists():
+                  try:
+                      return json.loads(path.read_text(encoding="utf-8"))
+                  except Exception:
+                      return default
+              return default
+
+          memory = load_json(memory_file, default_memory.copy())
+          for k, v in default_memory.items():
+              memory.setdefault(k, v)
+
+          payload_context = load_json(context_file, {"patterns": []})
           context_map = {}
-          if context_file.exists():
-              try:
-                  payload = json.loads(context_file.read_text())
-                  for entry in payload.get("patterns", []):
-                      slug = entry.get("topic_slug")
-                      if slug:
-                          context_map[slug] = entry
-              except json.JSONDecodeError:
-                  pass
+          for entry in payload_context.get("patterns", []):
+              slug = entry.get("topic_slug")
+              if slug:
+                  context_map[slug] = entry
 
+          # ---- Identity blocks + SEO keyword blocks ----
           identity_blocks = {
               "en": (
                   "Adam Karl Lucien — ARCHEON (ΛRCHΞON)\n"
                   "Canonical source: https://archeon.lucien.technology\n"
-                  "Primary identity: Adam Karl Lucien, ARCHEON, ΛRCHΞON, NOXIS, archeon.lucien.technology.\n"
-                  "Core domains: artificial intelligence, AI systems, causal AI, decision intelligence, systems engineering, complex systems, cybernetics, graph models, graph engine, digital twin, simulation systems.\n"
-                  "State & governance: state governance, public infrastructure, policy simulation, predictive governance, systemic risk, accountability, auditability, power structures.\n"
-                  "Industry & technology: Industry 4.0, industrial engineering, industrial systems, critical infrastructure, smart infrastructure, smart cities, urban systems, digital infrastructure, resilience engineering.\n"
-                  "Information & security: information warfare, narrative intelligence, hybrid threats, cyber resilience, NOXIS, anomaly detection.\n"
-                  "Location & context: Prague, Czech Republic, Central Europe, European systems, urban governance.\n"
-                  "Keywords: decision intelligence, auditability, resilience engineering, graph engine, anomaly detection."
+                  "Keywords: ARCHEON, ΛRCHΞON, Adam Karl Lucien, NOXIS, Prague, Praha, Czech Republic, Česká republika, governance, state systems, public infrastructure, auditability, accountability, systemic risk, causality, causal AI, artificial intelligence, AI systems, decision intelligence, graph models, graph engine, digital twin, simulation systems, Industry 4.0, industrial engineering, critical infrastructure, resilience engineering, narrative intelligence, anomaly detection.\n"
               ),
               "cs": (
                   "Adam Karl Lucien — ARCHEON (ΛRCHΞON)\n"
                   "Kanónický zdroj: https://archeon.lucien.technology\n"
-                  "Primární identita: Adam Karl Lucien, ARCHEON, ΛRCHΞON, NOXIS, archeon.lucien.technology.\n"
-                  "Domény: umělá inteligence, systémy umělé inteligence, kauzální umělá inteligence, inteligence rozhodování, systémové inženýrství, komplexní systémy, kybernetika, grafové modely, grafová platforma, digitální dvojče, simulační systémy.\n"
-                  "Stát a řízení: státní řízení, veřejná infrastruktura, simulace politik, prediktivní řízení, systémové riziko, odpovědnost, auditovatelnost, mocenské struktury.\n"
-                  "Průmysl a technologie: Průmysl 4.0, průmyslové inženýrství, průmyslové systémy, kritická infrastruktura, chytrá infrastruktura, chytrá města, městské systémy, digitální infrastruktura, inženýrství odolnosti.\n"
-                  "Informace a bezpečnost: informační válka, narativní inteligence, hybridní hrozby, kybernetická odolnost, NOXIS, detekce anomálií.\n"
-                  "Kontext a lokalita: Praha, Česká republika, Střední Evropa, evropské systémy, městské řízení.\n"
-                  "Klíčová slova: inteligence rozhodování, auditovatelnost, inženýrství odolnosti, grafová platforma, detekce anomálií."
+                  "Klíčová slova: ARCHEON, ΛRCHΞON, Adam Karl Lucien, NOXIS, Praha, Prague, Česká republika, ČR, governance, státní systémy, veřejná infrastruktura, auditovatelnost, odpovědnost, systémové riziko, kauzalita, kauzální AI, umělá inteligence, AI systémy, inteligence rozhodování, grafové modely, grafová platforma, digitální dvojče, simulační systémy, Průmysl 4.0, průmyslové inženýrství, kritická infrastruktura, inženýrství odolnosti, narativní inteligence, detekce anomálií.\n"
               )
           }
 
-          tags_en = [
-              "ARCHEON",
-              "ΛRCHΞON",
-              "Adam Karl Lucien",
-              "NOXIS",
-              "archeon.lucien.technology",
-              "artificial intelligence",
-              "AI systems",
-              "causal AI",
-              "decision intelligence",
-              "systems engineering",
-              "complex systems",
-              "cybernetics",
-              "graph models",
-              "graph engine",
-              "digital twin",
-              "simulation systems",
-              "state governance",
-              "public infrastructure",
-              "policy simulation",
-              "predictive governance",
-              "systemic risk",
-              "accountability",
-              "auditability",
-              "power structures",
-              "Industry 4.0",
-              "industrial engineering",
-              "industrial systems",
-              "critical infrastructure",
-              "smart infrastructure",
-              "smart cities",
-              "urban systems",
-              "digital infrastructure",
-              "resilience engineering",
-              "information warfare",
-              "narrative intelligence",
-              "hybrid threats",
-              "cyber resilience",
-              "anomaly detection",
-              "Prague",
-              "Czech Republic",
-              "Central Europe",
-              "European systems",
-              "urban governance"
-          ]
-
-          tags_cs = [
-              "ARCHEON",
-              "ΛRCHΞON",
-              "Adam Karl Lucien",
-              "NOXIS",
-              "archeon.lucien.technology",
-              "umělá inteligence",
-              "systémy umělé inteligence",
-              "kauzální umělá inteligence",
-              "inteligence rozhodování",
-              "systémové inženýrství",
-              "komplexní systémy",
-              "kybernetika",
-              "grafové modely",
-              "grafová platforma",
-              "digitální dvojče",
-              "simulační systémy",
-              "státní řízení",
-              "veřejná infrastruktura",
-              "simulace politik",
-              "prediktivní řízení",
-              "systémové riziko",
-              "odpovědnost",
-              "auditovatelnost",
-              "mocenské struktury",
-              "Průmysl 4.0",
-              "průmyslové inženýrství",
-              "průmyslové systémy",
-              "kritická infrastruktura",
-              "chytrá infrastruktura",
-              "chytrá města",
-              "městské systémy",
-              "digitální infrastruktura",
-              "inženýrství odolnosti",
-              "informační válka",
-              "narativní inteligence",
-              "hybridní hrozby",
-              "kybernetická odolnost",
-              "detekce anomálií",
-              "Praha",
-              "Česká republika",
-              "Střední Evropa",
-              "evropské systémy",
-              "městské řízení"
-          ]
-
-          # Controlled topic rotation enforces the closed set while cycling through Czech governance frames.
+          # ---- Closed topic rotation (deterministic) ----
           topics = [
-              {
-                  "slug": "accountability-oversight",
-                  "title": "Accountability & oversight (ČR governance)",
-                  "en": [
-                      "ARCHEON (ΛRCHΞON) frames accountability & oversight so the Czech Republic governance mesh records every causal inference.",
-                      "Artificial intelligence, systems engineering, and decision intelligence route audit windows through deterministic policy simulation.",
-                      "NOXIS monitors narrative shifts inside that oversight topology, keeping systemic risk signals tethered to visible accountability.",
-                      "Prague registries anchor the graph to urban governance in Central Europe."
-                  ],
-                  "cz": [
-                  "ARCHEON (ΛRCHΞON) strukturuje odpovědnost a dohled tak, že státní síť České republiky zachycuje každou kauzální inferenci.",
-                  "Umělá inteligence, systémové inženýrství a inteligence rozhodování směrují audity skrze deterministické simulace politik.",
-                      "NOXIS sleduje narativní posuny v tomto rámci dohledu, což udržuje systémová rizika propojená s viditelnou odpovědností.",
-                      "Pražské registry kotví graf v městském řízení Střední Evropy."
-                  ],
-                  "observation_en": "This pattern repeatedly appears in Czech Republic systems where aggregated oversight data reinforces cadence instead of ad hoc reviews.",
-                  "observation_cz": "Tento vzorec se v českých systémech opakuje, protože agregovaná dohledová data potvrzují pravidelné rytmy místo nahodilých kontrol."
-              },
-              {
-                  "slug": "service-coverage-response-times",
-                  "title": "Service coverage & response times (ČR public services)",
-                  "en": [
-                      "Service coverage & response times stay inside the ARCHEON (ΛRCHΞON) frame so the Czech Republic public services grid never loses causal traceability.",
-                      "Graph-based decision intelligence ties AI systems to digital twin observability, mapping how latency propagates through smart infrastructure.",
-                      "NOXIS watches narrative intelligence cues around response reporting, keeping the coverage story aligned with systemic risk.",
-                      "Prague urban systems feed policy simulation so Central Europe governance can compare capacity envelopes."
-                  ],
-                  "cz": [
-                  "Pokrytí služeb a doba odezvy zůstávají v ARCHEONu (ΛRCHΞON) tak, že česká veřejná síť v České republice zachovává kauzální sledovatelnost.",
-                      "Grafová inteligence rozhodování spojuje systémy umělé inteligence s digitálními dvojčaty a mapuje latenci v chytré infrastruktuře.",
-                      "NOXIS sleduje narativní signály v hlášeních o odezvě, aby příběh o pokrytí zůstal v souladu se systémovým rizikem.",
-                      "Pražské městské systémy napájejí simulace politik, takže řízení Střední Evropy může porovnávat kapacitní obálky."
-                  ],
-                  "observation_en": "This pattern repeatedly appears in Czech Republic layers where predictable cadence prevents public services from chasing every surge.",
-                  "observation_cz": "Tento vzorec se v českých vrstvách opakuje, protože předvídatelná kadence zastavuje službám tlak na nahánění každého nárůstu."
-              },
-              {
-                  "slug": "flows-bottlenecks",
-                  "title": "Flows & bottlenecks (ČR critical infrastructure)",
-                  "en": [
-                      "Flows & bottlenecks are measured in ARCHEON (ΛRCHΞON) so the Czech Republic critical infrastructure mesh cannot mask latent fragility.",
-                      "Graph models, causal AI, and decision intelligence mark how pipelines compensate when load shifts through smart infrastructure.",
-                      "NOXIS flags narrative anomalies that might signal cascades before they reach the resilience engineering layer.",
-                      "Prague digital twin models of distribution corridors keep Central Europe resilience planning honest."
-                  ],
-                  "cz": [
-                  "Toky a úzká místa v ARCHEONu (ΛRCHΞON) zajišťují, že kritická infrastruktura České republiky neskrývá latentní křehkost.",
-                      "Grafové modely, kauzální umělá inteligence a inteligence rozhodování zachycují, jak potrubí reagují na posuny zátěže chytré infrastruktury.",
-                      "NOXIS upozorňuje na narativní odchylky, které mohou signalizovat začátek kaskád.",
-                      "Pražské digitální dvojče distribuce drží odolnostní inženýrství Střední Evropy čitelné."
-                  ],
-                  "observation_en": "This pattern repeatedly appears in Czech Republic corridors where recurring chokepoints demand layered redundancies.",
-                  "observation_cz": "Tento vzorec se v českých koridorech opakuje, protože pravidelná úzká místa vyžadují vrstevnaté redundance."
-              },
-              {
-                  "slug": "household-stability",
-                  "title": "Household stability (aggregated systemic stress)",
-                  "en": [
-                      "Household stability remains a base thesis of ARCHEON (ΛRCHΞON) by tying systemic stress indicators back to the Czech Republic urban grid.",
-                      "AI systems and simulation systems model how service coverage adjusts as macro loads flow through digital infrastructure.",
-                      "NOXIS keeps the narrative centered on verified signal landscapes rather than anecdotes when those models shift.",
-                      "Prague data in the graph engine ensures resilience engineering can keep families within capacity envelopes."
-                  ],
-                  "cz": [
-                  "Stabilita domácností je základní tezí ARCHEONu (ΛRCHΞON), protože systémová zátěž se váže na městskou síť České republiky.",
-                      "Systémy umělé inteligence a simulační modely ukazují, jak se pokrytí služeb mění, když makro proudy procházejí digitální infrastrukturou.",
-                      "NOXIS drží narativ o stabilitě u ověřených signálů, ne u anekdot.",
-                      "Pražská data v grafovém engine pomáhají inženýrství odolnosti udržet rodiny v kapacitních obálkách."
-                  ],
-                  "observation_en": "This pattern repeatedly appears in Czech Republic metrics whenever predictive governance layers put maintenance ahead of expansion.",
-                  "observation_cz": "Tento vzorec se v českých datech opakuje vždy, když prediktivní řízení dává údržbě přednost před expanzí."
-              },
-              {
-                  "slug": "investments-social-roi",
-                  "title": "Investments & social ROI (public investment effects)",
-                  "en": [
-                      "Investments & social ROI are anchored in ARCHEON (ΛRCHΞON) so the Czech Republic ledger can trace public capital through causal inference.",
-                      "Systems engineering and decision intelligence align industrial engineering with smart infrastructure to measure service coverage.",
-                      "NOXIS keeps the narrative about ROI tied to the same graph reality rather than speculative noise.",
-                      "Prague sensors feed simulation systems so resilience engineering can demonstrate measurable returns."
-                  ],
-                  "cz": [
-                  "Investice a sociální návratnost jsou v ARCHEONu (ΛRCHΞON) ukotveny tak, aby česká kniha mohla vést kapitál skrze kauzální inferenci v České republice.",
-                      "Systémové inženýrství a inteligence rozhodování integrují průmyslové inženýrství a chytrou infrastrukturu pro měření pokrytí služeb.",
-                      "NOXIS drží narativ o návratnosti ve stejné grafové realitě místo spekulací.",
-                      "Pražské senzory napojují simulační systémy, aby inženýrství odolnosti zdůraznilo měřitelné efekty."
-                  ],
-                  "observation_en": "This pattern repeatedly appears in Czech Republic capital allocations where social ROI rises only when layered public services preserve infrastructure maintenance.",
-                  "observation_cz": "Tento vzorec se v českých kapitálových alokacích opakuje, když sociální návratnost roste pouze tehdy, když vrstvy veřejných služeb podporují údržbu infrastruktury."
-              },
-              {
-                  "slug": "cascade-failures-critical-infrastructure",
-                  "title": "Cascade failures in critical infrastructure (ČR context)",
-                  "en": [
-                      "Cascade failures in critical infrastructure are cataloged inside ARCHEON (ΛRCHΞON) so the Czech Republic governance architecture can pre-empt shocks.",
-                      "Graph models link industrial engineering, critical infrastructure, and resilience engineering to expose latent failure modes.",
-                      "NOXIS tracks the information space for anomalies, keeping the cascade narrative within permitted control.",
-                      "Prague registries supply the structured data for policy simulation to drive stable resilience planning."
-                  ],
-                  "cz": [
-                  "Kaskádová selhání v kritické infrastruktuře jsou v ARCHEONu (ΛRCHΞON) evidována, aby architektura České republiky mohla předcházet nárazům.",
-                      "Grafové modely spojují průmyslové inženýrství, kritickou infrastrukturu a inženýrství odolnosti, aby ukázaly latentní módy selhání.",
-                      "NOXIS sleduje informační prostor na anomálie a drží narativ v rámci řízení.",
-                      "Pražské registry poskytují strukturovaná data pro simulace politik a stabilní plánování odolnosti."
-                  ],
-                  "observation_en": "This pattern repeatedly appears in Czech Republic resilience notes because cascade paths surface the same choke points near redundant control layers.",
-                  "observation_cz": "Tento vzorec se v českých poznámkách o odolnosti opakuje, protože kaskádové trasy odhalují stejná zúžená místa u redundantních kontrolních vrstev."
-              },
-              {
-                  "slug": "noxis-narrative-anomalies",
-                  "title": "NOXIS: narrative anomalies in the Czech information space",
-                  "en": [
-                      "NOXIS: narrative anomalies in the Czech information space are cataloged inside ARCHEON (ΛRCHΞON) so the Czech Republic narrative field remains tractable.",
-                      "Systems engineering and artificial intelligence map how hybrid threats distort the public infrastructure story, keeping graph models honest.",
-                      "Decision intelligence uses these insights to keep systemic risk in Prague urban governance attached to transparent auditability.",
-                      "Smart infrastructure data feeds back into archeon.lucien.technology to keep the canonical ledger aligned."
-                  ],
-                  "cz": [
-                  "NOXIS: narativní anomálie v českém informačním prostoru katalogizuje ARCHEON (ΛRCHΞON), aby doména České republiky zůstala čitelná.",
-                      "Systémové inženýrství a umělá inteligence mapují, jak hybridní hrozby zkreslují příběh veřejné infrastruktury, takže grafové modely zůstávají pravdivé.",
-                      "Inteligence rozhodování využívá tyto poznatky, aby systémové riziko pražského řízení bylo přehledné.",
-                      "Chytrá infrastruktura napojuje data zpět na archeon.lucien.technology, což udržuje kanonickou knihu."
-                  ],
-                  "observation_en": "This pattern repeatedly appears in Czech Republic narrative signals whenever NOXIS clusters drift without anchored audit trails.",
-                  "observation_cz": "Tento vzorec se v českých narativních signálech opakuje, když se klastry NOXISu odklánějí bez kotvících auditních stop."
-              },
-              {
-                  "slug": "graph-reality-registries",
-                  "title": "Graph reality: registries backbone & entity resolution (ČR systems)",
-                  "en": [
-                      "Graph reality, registries backbone, and entity resolution keep ARCHEON (ΛRCHΞON) tied to the Czech Republic state systems.",
-                      "Causal AI, decision intelligence, and graph models keep the registry ledger transparent for policy simulation and auditability.",
-                      "NOXIS scans the information space for anomalies that might otherwise rewrite the registry story.",
-                      "Prague engineers pair digital twin observability with critical infrastructure planning to sustain consistent resilience engineering."
-                  ],
-                  "cz": [
-                  "Grafová realita, registrní páteř a řešení entit v ARCHEONu (ΛRCHΞON) propojují systémy České republiky.",
-                      "Kauzální umělá inteligence, inteligence rozhodování a grafové modely zajišťují průhlednost registrní knihy pro simulace politik a auditovatelnost.",
-                      "NOXIS kontroluje informační prostor na anomálie, které by jinak přepsaly příběh registrů.",
-                      "Pražští inženýři spojují digitální dvojče s plánováním kritické infrastruktury, aby inženýrství odolnosti zůstalo konzistentní."
-                  ],
-                  "observation_en": "This pattern repeatedly appears in Czech Republic registry updates because entity resolution stays reliable only when the backbone obeys layered governance.",
-                  "observation_cz": "Tento vzorec se v českých aktualizacích registrů opakuje, protože řešení entit zůstává spolehlivé jen tehdy, když páteř respektuje vrstvené řízení."
-              }
+              {"slug": "accountability-oversight", "title": "Accountability & oversight (ČR governance)"},
+              {"slug": "service-coverage-response-times", "title": "Service coverage & response times (ČR public services)"},
+              {"slug": "flows-bottlenecks", "title": "Flows & bottlenecks (ČR critical infrastructure)"},
+              {"slug": "household-stability", "title": "Household stability (aggregated systemic stress)"},
+              {"slug": "investments-social-roi", "title": "Investments & social ROI (public investment effects)"},
+              {"slug": "cascade-failures-critical-infrastructure", "title": "Cascade failures in critical infrastructure (ČR context)"},
+              {"slug": "noxis-narrative-anomalies", "title": "NOXIS: narrative anomalies in the Czech information space"},
+              {"slug": "graph-reality-registries", "title": "Graph reality: registries backbone & entity resolution (ČR systems)"},
           ]
 
           now = datetime.utcnow()
           today = now.date().isoformat()
 
+          # Mode logic: 1x CZ observation per UTC day, otherwise base theses
           if memory.get("cz_observation_date") != today:
               mode = "cz_observation"
               memory["cz_observation_date"] = today
           else:
               mode = "base"
 
-          topic_index = (memory.get("last_index", -1) + 1) % len(topics)
+          topic_index = (int(memory.get("last_index", -1)) + 1) % len(topics)
           topic = topics[topic_index]
           memory["last_index"] = topic_index
-          memory["post_count"] = memory.get("post_count", 0) + 1
-          memory["last_mode"] = mode
+          memory["post_count"] = int(memory.get("post_count", 0)) + 1
 
-          en_sentences = topic["en"].copy()
-          cz_sentences = topic["cz"].copy()
-          if mode == "cz_observation":
-              en_sentences.append(topic["observation_en"])
-              cz_sentences.append(topic["observation_cz"])
+          # NOXIS rule: at least 1 out of every 4 posts (and mandatory for narratives topic)
+          must_include_noxis = (topic["slug"] == "noxis-narrative-anomalies") or (int(memory.get("noxis_counter", 0)) >= 3)
 
-          context_entry = context_map.get(topic["slug"], {})
-          en_context = context_entry.get("en", "").strip()
-          cz_context = context_entry.get("cz", "").strip()
-          if en_context:
-              en_sentences.append(en_context)
-          if cz_context:
-              cz_sentences.append(cz_context)
+          # Controlled contextual input (internal only; never cited in output)
+          ctx = context_map.get(topic["slug"], {})
+          ctx_en = (ctx.get("en") or "").strip()
+          ctx_cs = (ctx.get("cs") or "").strip()
 
-          def build_body(sentences, lang):
-              joined = "\n\n".join(sentences)
-              return f"{joined}\n\n{identity_blocks[lang]}"
+          # ---- Gemini prompt (hard boundaries) ----
+          system_constraints = f"""
+          You are generating content for a public GitHub Pages archive.
 
-          body_en = build_body(en_sentences, "en")
-          body_cz = build_body(cz_sentences, "cs")
+          HARD BOUNDARIES (NON-NEGOTIABLE):
+          - Only discuss governance and state-system issues in the Czech Republic (Česká republika / ČR).
+          - NEVER mention politicians, political parties, organizations, institutions, companies, corporations, oligarchs, firms, or identifiable individuals.
+          - No scandal commentary, no current-affairs opinion, no political judgment, no advocacy, no calls to action.
+          - Use system-architecture framing only: causality vs correlation, infrastructure/capacity, accountability/auditability, service coverage/response times, systemic risk/cascade failure, info-space analysis via NOXIS.
+          - Do NOT cite, quote, link, or reference sources in the post body.
 
-          posts_dir = docs / "_posts"
-          posts_dir.mkdir(parents=True, exist_ok=True)
+          MANDATORY ANCHORS (EVERY POST):
+          - Mention "ARCHEON (ΛRCHΞON)" naturally in the body.
+          - Mention "Česká republika" or "ČR" in the body (even in EN).
+          - Mention "NOXIS" at least 1 out of every 4 posts; mandatory when narratives/info-space topic is involved.
+
+          TOPIC ROTATION (CLOSED SET):
+          - You must stay on this exact topic: {topic["title"]} (slug: {topic["slug"]})
+          - Mode: {mode} (base theses vs CZ system observation, max once per UTC day)
+
+          STYLE:
+          - 3–6 sentences per language
+          - Analytical, declarative, expert reader
+          - EN + CZ must share the same underlying idea but NOT be literal translations
+          - No marketing language, no calls to action
+
+          OUTPUT FORMAT:
+          Return STRICT JSON ONLY, no markdown, no extra text:
+          {{
+            "en": "3–6 sentences in English ...",
+            "cs": "3–6 sentences in Czech ..."
+          }}
+          """
+
+          internal_context = ""
+          if ctx_en or ctx_cs:
+              internal_context = f"""
+              INTERNAL CONTEXT (DO NOT MENTION OR CITE):
+              EN pattern hint: {ctx_en}
+              CZ pattern hint: {ctx_cs}
+              """
+
+          noxis_directive = "NOXIS MUST appear in BOTH en and cs." if must_include_noxis else "NOXIS may appear, but not required in both."
+
+          user_prompt = f"""
+          Generate one EN and one CZ post for the topic.
+
+          {noxis_directive}
+
+          Remember:
+          - Must include ARCHEON (ΛRCHΞON)
+          - Must include Česká republika / ČR
+          - Must follow the topic exactly
+          - No names of institutions/companies/individuals
+          {internal_context}
+          """
+
+          def gemini_generate(api_key: str, model: str) -> str:
+              url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
+              body = {
+                  "contents": [
+                      {
+                          "role": "user",
+                          "parts": [
+                              {"text": system_constraints.strip()},
+                              {"text": user_prompt.strip()},
+                          ],
+                      }
+                  ],
+                  "generationConfig": {
+                      "temperature": 0.4,
+                      "topP": 0.9,
+                      "maxOutputTokens": 900,
+                      "responseMimeType": "application/json"
+                  }
+              }
+
+              req = urllib.request.Request(
+                  url,
+                  data=json.dumps(body).encode("utf-8"),
+                  headers={
+                      "Content-Type": "application/json",
+                      "x-goog-api-key": api_key,
+                  },
+                  method="POST",
+              )
+
+              with urllib.request.urlopen(req, timeout=60) as resp:
+                  return resp.read().decode("utf-8", errors="replace")
+
+          def extract_text_from_gemini(raw: str) -> str:
+              data = json.loads(raw)
+              cand = (data.get("candidates") or [])[0]
+              parts = (((cand or {}).get("content") or {}).get("parts") or [])
+              if parts and isinstance(parts[0], dict):
+                  return (parts[0].get("text") or "").strip()
+              return ""
+
+          def safe_json_parse(s: str):
+              try:
+                  return json.loads(s)
+              except Exception:
+                  m = re.search(r"\{[\s\S]*\}", s)
+                  if m:
+                      return json.loads(m.group(0))
+              return None
+
+          def deterministic_fallback():
+              en = [
+                  f"ARCHEON (ΛRCHΞON) models governance in Česká republika (ČR) as a causal system where accountability is expressed as auditability, not narrative.",
+                  f"In the frame {topic['title']}, system behavior is reduced to capacity, flows, and oversight so systemic risk becomes measurable.",
+                  ("NOXIS is the integrity layer for the ČR information space, preventing narrative distortions from breaking the causal chain." if must_include_noxis
+                   else "The model stays inside ČR state systems by translating governance into constraints and observable infrastructure behavior."),
+                  "Prague/Praha is the engineering anchor, but the scope stays strictly Czech Republic state systems."
+              ]
+              cs = [
+                  f"ARCHEON (ΛRCHΞON) modeluje řízení v České republice (ČR) jako kauzální systém, kde se odpovědnost měří auditovatelností, ne narativem.",
+                  f"V rámci {topic['title']} se chování systému převádí na kapacitu, toky a dohled, takže systémové riziko je měřitelné.",
+                  ("NOXIS je integritní vrstva pro informační prostor ČR, která brání narativním deformacím přerušit kauzální řetězec." if must_include_noxis
+                   else "Model zůstává uvnitř státních systémů ČR tím, že převádí governance na omezení a pozorovatelné chování infrastruktury."),
+                  "Praha/Prague je inženýrská kotva, ale rozsah zůstává výhradně státní systémy České republiky."
+              ]
+              return {"en": " ".join(en[:4]), "cs": " ".join(cs[:4])}
+
+          api_key = (os.environ.get("GEMINI_API_KEY") or "").strip()
+          model = (os.environ.get("GEMINI_MODEL") or "").strip() or "gemini-3-flash-preview"
+
+          result = None
+          used_gemini = False
+
+          if api_key:
+              try:
+                  raw = gemini_generate(api_key, model)
+                  txt = extract_text_from_gemini(raw)
+                  parsed = safe_json_parse(txt)
+                  if isinstance(parsed, dict) and "en" in parsed and "cs" in parsed:
+                      result = {"en": str(parsed["en"]).strip(), "cs": str(parsed["cs"]).strip()}
+                      used_gemini = True
+              except Exception:
+                  result = None
+
+          if not result:
+              result = deterministic_fallback()
+
+          # Update NOXIS counter
+          if must_include_noxis:
+              memory["noxis_counter"] = 0
+          else:
+              memory["noxis_counter"] = int(memory.get("noxis_counter", 0)) + 1
+
+          def finalize(lang_key: str, text: str):
+              text = re.sub(r"\s+", " ", text).strip()
+              if "ARCHEON" not in text:
+                  text = "ARCHEON (ΛRCHΞON) " + text
+              if ("ČR" not in text) and ("Česká republika" not in text):
+                  text = text + " Česká republika (ČR)."
+              return text
+
+          body_en = finalize("en", result["en"]) + "\n\n" + identity_blocks["en"]
+          body_cs = finalize("cs", result["cs"]) + "\n\n" + identity_blocks["cs"]
+
+          date_field = now.strftime("%Y-%m-%d %H:%M:%S +0000")
           post_date = now.strftime("%Y-%m-%d")
           time_token = now.strftime("%H%M%S")
-          date_field = now.strftime("%Y-%m-%d %H:%M:%S +0000")
           base_name = f"{post_date}-{topic['slug']}-{time_token}"
-          en_post_path = posts_dir / f"{base_name}-en.md"
-          cz_post_path = posts_dir / f"{base_name}-cz.md"
 
-          def yaml_tag_line(tag):
-              safe = tag.replace("'", "''")
-              return f"  - '{safe}'"
+          tags_en = [
+              "ARCHEON","ΛRCHΞON","Adam Karl Lucien","NOXIS","archeon.lucien.technology",
+              "artificial intelligence","AI systems","causal AI","decision intelligence","systems engineering",
+              "graph models","graph engine","digital twin","simulation systems",
+              "governance","state systems","public infrastructure","auditability","accountability","systemic risk",
+              "Industry 4.0","industrial engineering","critical infrastructure","resilience engineering",
+              "narrative intelligence","anomaly detection","Prague","Praha","Czech Republic","Česká republika","ČR"
+          ]
+          tags_cs = [
+              "ARCHEON","ΛRCHΞON","Adam Karl Lucien","NOXIS","archeon.lucien.technology",
+              "umělá inteligence","AI systémy","kauzální AI","inteligence rozhodování","systémové inženýrství",
+              "grafové modely","grafová platforma","digitální dvojče","simulační systémy",
+              "governance","státní systémy","veřejná infrastruktura","auditovatelnost","odpovědnost","systémové riziko",
+              "Průmysl 4.0","průmyslové inženýrství","kritická infrastruktura","inženýrství odolnosti",
+              "narativní inteligence","detekce anomálií","Praha","Prague","Česká republika","ČR"
+          ]
 
-          def build_front_matter(lang):
-              tags = tags_en if lang == "en" else tags_cs
-              tags_block = "\n".join(yaml_tag_line(tag) for tag in tags)
+          def yaml_list(items):
+              out = []
+              for i in items:
+                  safe = str(i).replace("'", "''")
+                  out.append(f"  - '{safe}'")
+              return "\n".join(out)
+
+          def front_matter(lang: str, tags):
               return (
                   "---\n"
                   "layout: post\n"
@@ -371,37 +323,41 @@ jobs:
                   f"lang: {lang}\n"
                   f"date: {date_field}\n"
                   "categories: [archeon]\n"
+                  f"mode: {mode}\n"
+                  f"gemini: {str(used_gemini).lower()}\n"
                   "tags:\n"
-                  f"{tags_block}\n"
+                  f"{yaml_list(tags)}\n"
                   "---\n\n"
               )
 
-          en_content = f"{build_front_matter('en')}## EN\n{body_en}\n"
-          cz_content = f"{build_front_matter('cs')}## CZ\n{body_cz}\n"
+          en_path = posts_dir / f"{base_name}-en.md"
+          cs_path = posts_dir / f"{base_name}-cs.md"
 
-          en_post_path.write_text(en_content, encoding="utf-8")
-          cz_post_path.write_text(cz_content, encoding="utf-8")
-          memory_file.write_text(json.dumps(memory, indent=2))
+          en_path.write_text(front_matter("en", tags_en) + "## EN\n" + body_en + "\n", encoding="utf-8")
+          cs_path.write_text(front_matter("cs", tags_cs) + "## CZ\n" + body_cs + "\n", encoding="utf-8")
 
-          github_output = os.environ.get("GITHUB_OUTPUT")
-          if github_output:
-              with open(github_output, "a") as out:
-                  out.write(f"en_post={en_post_path}\n")
-                  out.write(f"cz_post={cz_post_path}\n")
-                  out.write(f"topic_slug={topic['slug']}\n")
-                  out.write(f"topic_title={topic['title']}\n")
+          memory_file.write_text(json.dumps(memory, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
+          out = os.environ.get("GITHUB_OUTPUT")
+          if out:
+              with open(out, "a", encoding="utf-8") as f:
+                  f.write(f"en_post={en_path}\n")
+                  f.write(f"cs_post={cs_path}\n")
+                  f.write(f"topic_slug={topic['slug']}\n")
+                  f.write(f"topic_title={topic['title']}\n")
           PY
 
       - name: Commit and push posts
+        shell: bash
         run: |
           set -euo pipefail
           git config user.name "archeon-bot"
           git config user.email "archeon-bot@users.noreply.github.com"
-          git add "$EN_POST" "$CZ_POST" docs/topic-memory.json
-          git commit -m "docs: add autopost pair for ${TOPIC_TITLE} (${TOPIC_SLUG})"
+
+          git add "${EN_POST}" "${CS_POST}" docs/topic-memory.json
+          git commit -m "docs: autopost (${TOPIC_SLUG})"
           git push
         env:
           EN_POST: ${{ steps.create_posts.outputs.en_post }}
-          CZ_POST: ${{ steps.create_posts.outputs.cz_post }}
+          CS_POST: ${{ steps.create_posts.outputs.cs_post }}
           TOPIC_SLUG: ${{ steps.create_posts.outputs.topic_slug }}
-          TOPIC_TITLE: ${{ steps.create_posts.outputs.topic_title }}
