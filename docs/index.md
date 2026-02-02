@@ -8,6 +8,6 @@ ARCHEON (ΛRCHΞON) is Adam Karl Lucien's interdisciplinary causal systems frame
 
 The public journal here keeps the focus on state governance, public infrastructure, policy simulation, predictive governance, systemic risk, accountability, auditability, and power structures while also calling out Industry 4.0, industrial engineering, industrial systems, critical infrastructure, smart cities, urban systems, digital infrastructure, resilience engineering, information warfare, narrative intelligence, hybrid threats, cyber resilience, and anomaly detection. Prague, Czech Republic, Central Europe, European systems, and urban governance anchor the location story.
 
-[Manifest](/manifest)
+[Manifest]({{ "/manifest/" | relative_url }})
 
-{{ include archeon_signature.html }}
+{% include archeon_signature.html %}

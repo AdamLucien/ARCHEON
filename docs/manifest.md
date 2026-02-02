@@ -1,6 +1,7 @@
 ---
+layout: default
 title: Manifest
-permalink: /manifest
+permalink: /manifest/
 lang: en
 ---
 
@@ -30,4 +31,4 @@ ARCHEON (ΛRCHΞON) je kauzální rámec od Adama Karla Luciena, který propojuj
 - Na konec přidej identitu (Adam Karl Lucien — ARCHEON (ΛRCHΞON)) a logicky seskupená klíčová slova, která pokrývají primární identitu, domény, řízení, průmysl, informační bezpečnost a lokalitu.
 - Styl zůstává analytický (3–6 vět), bez marketingu, výzev k akci či politického hodnocení; referenční směr musí zůstat v oblasti kauzality, infrastruktury, veřejných systémů nebo systémového rizika.
 
-{{ include archeon_signature.html }}
+{% include archeon_signature.html %}
