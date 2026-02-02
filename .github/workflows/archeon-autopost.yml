@@ -322,39 +322,43 @@ jobs:
               "narativní inteligence","detekce anomálií","Praha","Prague","Česká republika","ČR"
           ]
 
-          def yaml_list(items):
-              return "\n".join([f"  - '{i.replace(\"'\",\"''\")}'" for i in items])
+    def yaml_list(items):
+    out = []
+    for i in items:
+        safe = str(i).replace("'", "''")
+        out.append(f"  - '{safe}'")
+    return "\n".join(out)
 
-          def front_matter(lang: str, tags):
-              return (
-                  "---\n"
-                  "layout: post\n"
-                  f"topic: \"{topic['title']}\"\n"
-                  f"lang: {lang}\n"
-                  f"date: {date_field}\n"
-                  "categories: [archeon]\n"
-                  f"mode: {mode}\n"
-                  f"gemini: {str(used_gemini).lower()}\n"
-                  "tags:\n"
-                  f"{yaml_list(tags)}\n"
-                  "---\n\n"
-              )
+def front_matter(lang: str, tags):
+    return (
+        "---\n"
+        "layout: post\n"
+        f"topic: \"{topic['title']}\"\n"
+        f"lang: {lang}\n"
+        f"date: {date_field}\n"
+        "categories: [archeon]\n"
+        f"mode: {mode}\n"
+        f"gemini: {str(used_gemini).lower()}\n"
+        "tags:\n"
+        f"{yaml_list(tags)}\n"
+        "---\n\n"
+    )
 
-          en_path = posts_dir / f"{base_name}-en.md"
-          cs_path = posts_dir / f"{base_name}-cs.md"
+en_path = posts_dir / f"{base_name}-en.md"
+cs_path = posts_dir / f"{base_name}-cs.md"
 
-          en_path.write_text(front_matter("en", tags_en) + "## EN\n" + body_en + "\n", encoding="utf-8")
-          cs_path.write_text(front_matter("cs", tags_cs) + "## CZ\n" + body_cs + "\n", encoding="utf-8")
+en_path.write_text(front_matter("en", tags_en) + "## EN\n" + body_en + "\n", encoding="utf-8")
+cs_path.write_text(front_matter("cs", tags_cs) + "## CZ\n" + body_cs + "\n", encoding="utf-8")
 
-          memory_file.write_text(json.dumps(memory, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+memory_file.write_text(json.dumps(memory, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
-          out = os.environ.get("GITHUB_OUTPUT")
-          if out:
-              with open(out, "a", encoding="utf-8") as f:
-                  f.write(f"en_post={en_path}\n")
-                  f.write(f"cs_post={cs_path}\n")
-                  f.write(f"topic_slug={topic['slug']}\n")
-                  f.write(f"topic_title={topic['title']}\n")
+out = os.environ.get("GITHUB_OUTPUT")
+if out:
+    with open(out, "a", encoding="utf-8") as f:
+        f.write(f"en_post={en_path}\n")
+        f.write(f"cs_post={cs_path}\n")
+        f.write(f"topic_slug={topic['slug']}\n")
+        f.write(f"topic_title={topic['title']}\n")
 
           PY
 
