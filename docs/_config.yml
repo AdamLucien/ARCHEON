@@ -1,7 +1,7 @@
 title: ARCHEON
 description: Causal systems framework by Adam Karl Lucien
 
-# GitHub Pages runtime address
+# GitHub Pages runtime address (project site)
 url: "https://adamlucien.github.io"
 baseurl: "/ARCHEON"
 
@@ -9,3 +9,6 @@ theme: minima
 plugins:
   - jekyll-feed
   - jekyll-sitemap
+
+# Standard permalink for posts (NO extra folders)
+permalink: /:year/:month/:day/:title.html
