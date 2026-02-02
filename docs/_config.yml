@@ -1,0 +1,8 @@
+title: ARCHEON
+description: Causal systems framework by Adam Karl Lucien
+url: https://archeon.lucien.technology
+baseurl: ""
+theme: minima
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap

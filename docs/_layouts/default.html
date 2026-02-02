@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="{{ page.lang | default: 'en' }}">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% if page.title %}{{ page.title }} — {% endif %}{{ site.title | default: 'ARCHEON' }}</title>
+    <meta name="description" content="{{ page.description | default: site.description | escape }}">
+    <link rel="canonical" href="{{ site.url | default: 'https://archeon.lucien.technology' }}">
+    <link rel="alternate" hreflang="en" href="https://archeon.lucien.technology/">
+    <link rel="alternate" hreflang="cs" href="https://archeon.lucien.technology/cs/">
+    <style>
+      :root {
+        font-family: 'Inter', 'Space Grotesk', system-ui, -apple-system, sans-serif;
+        line-height: 1.65;
+        color: #0f172a;
+        background: #f6f5f2;
+      }
+      body {
+        margin: 0;
+        background: #f6f5f2;
+      }
+      .page {
+        min-height: 100vh;
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 2rem 1.5rem 3rem;
+        background: #ffffff;
+        box-shadow: 0 25px 60px rgba(15, 23, 42, 0.08);
+      }
+      a {
+        color: #1f77b4;
+        text-decoration: none;
+      }
+      header.site-header {
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid #e2e8f0;
+      }
+      header.site-header h1 {
+        margin: 0 0 0.35rem;
+        font-size: 1.6rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+      header.site-header p {
+        margin: 0;
+        color: #475569;
+        font-size: 0.95rem;
+      }
+      main.content {
+        margin-bottom: 2rem;
+      }
+      footer.site-footer {
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #e2e8f0;
+      }
+      .archeon-signature {
+        font-size: 0.95rem;
+        color: #1f2937;
+      }
+      .archeon-signature .identity {
+        margin: 0 0 0.4rem;
+        font-weight: 600;
+      }
+      .archeon-signature .canonical {
+        margin: 0 0 0.6rem;
+        font-size: 0.9rem;
+        color: #475569;
+      }
+      .archeon-signature .keyword-groups p {
+        margin: 0 0 0.4rem;
+        font-size: 0.9rem;
+        color: #334155;
+      }
+      .post-topic {
+        margin: 0;
+        font-size: 0.8rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: #64748b;
+      }
+      .post-meta {
+        margin: 0;
+        font-size: 0.9rem;
+        color: #475569;
+      }
+      .post-body h2 {
+        font-size: 1.1rem;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: #111827;
+        margin-top: 1.5rem;
+      }
+      .post-tags {
+        margin-top: 1rem;
+        font-size: 0.85rem;
+        color: #475569;
+      }
+    </style>
+    {% include structured_data.html %}
+  </head>
+  <body>
+    <div class="page">
+      <header class="site-header">
+        <h1>{{ site.title | default: 'ARCHEON' }}</h1>
+        <p>Multidisciplinary causal systems boundary led by Adam Karl Lucien — satellite archive for <a href="https://archeon.lucien.technology" rel="nofollow">archeon.lucien.technology</a>.</p>
+      </header>
+      <main class="content">
+        {{ content }}
+      </main>
+      <footer class="site-footer">
+        {% include archeon_signature.html %}
+      </footer>
+    </div>
+  </body>
+</html>
