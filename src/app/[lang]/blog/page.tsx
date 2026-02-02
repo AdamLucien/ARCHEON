@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { Metadata, PageProps } from "next";
+import type { Metadata } from "next";
 import { absoluteUrl } from "../../../lib/seo";
 import { getPostsByLang } from "../../../lib/posts";
 
@@ -22,12 +22,12 @@ function getPageMeta(lang: "en" | "cs") {
   };
 }
 
-type BlogListProps = PageProps<"/[lang]/blog">;
-
-export async function generateMetadata({ params }: BlogListProps): Promise<Metadata> {
-  const resolvedParams = await params;
-  const resolvedLang = Array.isArray(resolvedParams?.lang) ? resolvedParams.lang[0] : resolvedParams?.lang;
-  const lang = resolveLanguage(resolvedLang ?? "en");
+export async function generateMetadata({
+  params,
+}: {
+  params: { lang?: string };
+}): Promise<Metadata> {
+  const lang = resolveLanguage(params.lang ?? "en");
   const meta = getPageMeta(lang);
   return {
     title: meta.title,
@@ -38,12 +38,12 @@ export async function generateMetadata({ params }: BlogListProps): Promise<Metad
   };
 }
 
-export default async function BlogListPage({
+export default function BlogListPage({
   params,
-}: BlogListProps) {
-  const resolvedParams = await params;
-  const langParam = Array.isArray(resolvedParams.lang) ? resolvedParams.lang[0] : resolvedParams.lang;
-  const lang = resolveLanguage(langParam ?? "en");
+}: {
+  params: { lang?: string };
+}) {
+  const lang = resolveLanguage(params.lang ?? "en");
   const posts = getPostsByLang(lang);
   const locale = lang === "cs" ? "cs-CZ" : "en-US";
   const heading = lang === "cs" ? "Český deník" : "English journal";

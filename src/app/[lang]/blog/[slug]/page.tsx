@@ -1,4 +1,4 @@
-import type { Metadata, PageProps } from "next";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { remark } from "remark";
 import html from "remark-html";
@@ -34,14 +34,14 @@ export function generateStaticParams() {
 export const dynamicParams = false;
 export const dynamic = "force-static";
 
-type BlogPostProps = PageProps<"/[lang]/blog/[slug]">;
-
-export async function generateMetadata({ params }: BlogPostProps): Promise<Metadata> {
-  const resolvedParams = await params;
-  const resolvedLangParam = Array.isArray(resolvedParams?.lang) ? resolvedParams.lang[0] : resolvedParams?.lang;
-  const langParam = normalizeLangParam(resolvedLangParam);
+export async function generateMetadata({
+  params,
+}: {
+  params: { lang?: string; slug?: string };
+}): Promise<Metadata> {
+  const langParam = normalizeLangParam(params.lang);
   const contentLang = mapToContentLang(langParam);
-  const slug = resolvedParams?.slug;
+  const slug = params.slug;
   if (!slug) {
     return { title: "ARCHEON journal — Not found" };
   }
@@ -60,12 +60,14 @@ export async function generateMetadata({ params }: BlogPostProps): Promise<Metad
   };
 }
 
-export default async function BlogPostPage({ params }: BlogPostProps) {
-  const resolvedParams = await params;
-  const resolvedLangParam = Array.isArray(resolvedParams?.lang) ? resolvedParams.lang[0] : resolvedParams?.lang;
-  const langParam = normalizeLangParam(resolvedLangParam);
+export default async function BlogPostPage({
+  params,
+}: {
+  params: { lang?: string; slug?: string };
+}) {
+  const langParam = normalizeLangParam(params.lang);
   const contentLang = mapToContentLang(langParam);
-  const slug = resolvedParams?.slug;
+  const slug = params.slug;
   if (!slug) {
     notFound();
   }
