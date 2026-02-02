@@ -1,6 +1,116 @@
-backups/archeon-backup-20260127-094116.tgz
-backups/archeon-backup-20260127-190200.tgz
-backups/archeon-backup-20260127-192500.tgz
-backups/important-20260127-202532.tar.gz
-backups/important-20260127-205519.tar.gz
-backups/important-20260127-225318.tar.gz
+########################################
+# OS / Editor
+########################################
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*.tmp
+*.bak
+*.orig
+*.log
+
+.vscode/
+.idea/
+*.code-workspace
+
+########################################
+# Node / JavaScript / Next.js
+########################################
+node_modules/
+.next/
+out/
+dist/
+build/
+coverage/
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+########################################
+# Environment / Secrets
+########################################
+.env
+.env.*
+!.env.example
+
+########################################
+# Cloudflare / Wrangler
+########################################
+.wrangler/
+.wrangler-state/
+.dev.vars
+.dev.vars.*
+.wrangler.toml.bak
+
+########################################
+# Next.js export artifacts
+########################################
+.next/
+out/
+.vercel/
+
+########################################
+# Jekyll / Ruby (docs content only, NOT build)
+########################################
+.bundle/
+vendor/bundle/
+.sass-cache/
+.jekyll-cache/
+.jekyll-metadata
+_site/
+dist/
+
+########################################
+# Backups / Archives (CRITICAL)
+########################################
+backups/
+*.tgz
+*.tar
+*.tar.gz
+*.zip
+*.7z
+
+########################################
+# Temporary / Generated
+########################################
+tmp/
+temp/
+.cache/
+*.pid
+
+########################################
+# GitHub Actions local artifacts
+########################################
+.artifacts/
+.act/
+
+########################################
+# Python (GitHub Actions scripts)
+########################################
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+
+########################################
+# Security / NOXIS hygiene
+########################################
+*.pem
+*.key
+*.crt
+*.csr
+*.der
+*.pfx
+*.p12
+
+########################################
+# Optional: local content experiments
+########################################
+drafts/
+notes/
+scratch/
