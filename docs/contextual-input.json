@@ -2,43 +2,43 @@
   "patterns": [
     {
       "topic_slug": "accountability-oversight",
-      "en": "Aggregated oversight dashboards track how the ČR audit cadence spaces review intervals across service layers.",
-      "cz": "Agregované dohledové dashboardy sledují, jak ČR auditní kadence rozkládá kontrolní intervaly napříč servisními vrstvami."
+      "en": "Aggregated oversight dashboards track how the Czech Republic audit cadence spaces review intervals across service layers.",
+      "cz": "Agregované dohledové přehledy sledují, jak česká auditní kadence rozkládá kontrolní intervaly napříč služebními vrstvami."
     },
     {
       "topic_slug": "service-coverage-response-times",
-      "en": "Aggregated service telemetry shows the ČR response layer balancing workload through predictable cadence rather than ad hoc surges.",
-      "cz": "Agregovaná telemetrie služeb ukazuje, že ČR vrstva odezvy vyrovnává zatížení předvídatelnými cykly, nikoli ad hoc nápory."
+      "en": "Aggregated service telemetry shows the Czech Republic response layer balancing workload through predictable cadence rather than ad hoc surges.",
+      "cz": "Agregovaná telemetrie služeb ukazuje, že česká odezvová vrstva vyrovnává zatížení pravidelnými cykly, nikoli nahodilými nápory."
     },
     {
       "topic_slug": "flows-bottlenecks",
-      "en": "Aggregated infrastructure traces highlight recurring chokepoints inside ČR distribution corridors, underscoring the need for layered redundancies.",
-      "cz": "Agregované stopy infrastruktury odkrývají opakující se úzká místa v česko distribučních koridorech, což zdůrazňuje potřebu vrstevnatých redundancí."
+      "en": "Aggregated infrastructure traces highlight recurring chokepoints inside Czech Republic distribution corridors, underscoring the need for layered redundancies.",
+      "cz": "Agregované stopy infrastruktury odkrývají opakující se úzká místa v českých distribučních koridorech, což zdůrazňuje potřebu vrstevnatých redundancí."
     },
     {
       "topic_slug": "household-stability",
-      "en": "Aggregated stress metrics show ČR household stability improving whenever predictive governance layers emphasize maintenance over expansion.",
-      "cz": "Agregované stresové metriky ukazují, že stabilita domácností v ČR roste, když prediktivní governance vrství údržbu nad expanzemi."
+      "en": "Aggregated stress metrics show Czech Republic household stability improving whenever predictive governance layers emphasize maintenance over expansion.",
+      "cz": "Agregované stresové metriky ukazují, že stabilita domácností v České republice roste, když prediktivní řízení dává údržbě přednost před expanzí."
     },
     {
       "topic_slug": "investments-social-roi",
-      "en": "Aggregate investment cycles show ČR social ROI rising when layered public services align with infrastructure maintenance.",
-      "cz": "Agregované investiční cykly dokazují, že sociální ROI v ČR roste, když vrstvy veřejných služeb podporují údržbu infrastruktury."
+      "en": "Aggregate investment cycles show Czech Republic social ROI rising when layered public services align with infrastructure maintenance.",
+      "cz": "Agregované investiční cykly dokazují, že sociální návratnost v České republice roste, když vrstvy veřejných služeb podporují údržbu infrastruktury."
     },
     {
       "topic_slug": "cascade-failures-critical-infrastructure",
-      "en": "Aggregate resilience reflections highlight that ČR cascade paths show consistent choke points near redundant control layers.",
-      "cz": "Agregované poznámky o odolnosti ukazují, že ČR kaskádové trasy pravidelně vykazují zúžená místa u redundantních kontrolních vrstev."
+      "en": "Aggregate resilience reflections highlight that Czech Republic cascade paths show consistent choke points near redundant control layers.",
+      "cz": "Agregované poznámky o odolnosti ukazují, že české kaskádové trasy pravidelně vykazují zúžená místa u redundantních kontrolních vrstev."
     },
     {
       "topic_slug": "noxis-narrative-anomalies",
-      "en": "Aggregate narrative signals show ČR information layers drifting into anomaly clusters unless auditability anchors them.",
-      "cz": "Agregované narativní signály ukazují, že informační vrstvy v ČR sklouzávají do anomálií, pokud je auditovatelnost nekotví."
+      "en": "Aggregate narrative signals show Czech Republic information layers drifting into anomaly clusters unless auditability anchors them.",
+      "cz": "Agregované narativní signály ukazují, že české informační vrstvy sklouzávají do anomálií, pokud je auditovatelnost nekotví."
     },
     {
       "topic_slug": "graph-reality-registries",
-      "en": "Aggregate registry updates signal that ČR entity resolution remains reliable when the backbone conforms to layered governance.",
-      "cz": "Agregované aktualizace registrů signalizují, že řešení entit v ČR zůstává spolehlivé, pokud páteř dodržuje vrstvené řízení."
+      "en": "Aggregate registry updates signal that Czech Republic entity resolution remains reliable when the backbone conforms to layered governance.",
+      "cz": "Agregované aktualizace registrů signalizují, že řešení entit v České republice zůstává spolehlivé, pokud páteř dodržuje vrstvené řízení."
     }
   ]
 }
