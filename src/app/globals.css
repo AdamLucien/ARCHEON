@@ -1,5 +1,37 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: "Plus Jakarta Sans";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local("PlusJakartaSans-Regular"), local("Plus Jakarta Sans Regular");
+}
+
+@font-face {
+  font-family: "Plus Jakarta Sans";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: local("PlusJakartaSans-Medium"), local("Plus Jakarta Sans Medium");
+}
+
+@font-face {
+  font-family: "Plus Jakarta Sans";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: local("PlusJakartaSans-SemiBold"), local("Plus Jakarta Sans SemiBold");
+}
+
+@font-face {
+  font-family: "Plus Jakarta Sans";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local("PlusJakartaSans-Bold"), local("Plus Jakarta Sans Bold");
+}
+
 :root {
   --color-background: #121212;
   --color-foreground: #fafafa;
@@ -9,6 +41,7 @@
   --section-gap: 5rem;
   --contrast-scale: 1;
   --font-mono: "SF Mono", "Menlo", "IBM Plex Mono", "Courier New", monospace;
+  --font-sans: "Plus Jakarta Sans", "Inter", system-ui, -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   --text-h1: clamp(2.4rem, 3.4vw, 3.4rem);
   --text-h2: clamp(1.8rem, 2.2vw, 2.4rem);
   --text-body: 1rem;

@@ -1,14 +1,6 @@
 import type { Metadata, Viewport } from "next";
-import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { AUTHOR_NAME, SITE_NAME, SITE_URL, buildJsonLd } from "../lib/seo";
-
-const jakarta = Plus_Jakarta_Sans({
-  subsets: ["latin", "latin-ext"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-sans",
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -61,7 +53,7 @@ export default async function RootLayout({
   const jsonLd = buildJsonLd(pageKey);
   return (
     <html lang={htmlLang}>
-      <body className={`${jakarta.variable} antialiased`}>
+      <body className="antialiased">
         <script
           type="application/ld+json"
           id="archeon-jsonld"

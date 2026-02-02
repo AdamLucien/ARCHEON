@@ -12,6 +12,12 @@ function resolveLanguage(lang?: string) {
   return CONTENT_LANG_BY_PARAM[lang ?? "en"] ?? "en";
 }
 
+const BLOG_LANGUAGES: Array<"en" | "cz"> = ["en", "cz"];
+
+export function generateStaticParams() {
+  return BLOG_LANGUAGES.map((lang) => ({ lang }));
+}
+
 function getPageMeta(lang: "en" | "cs") {
   return {
     title: lang === "cs" ? "ARCHEON deník" : "ARCHEON journal",
@@ -25,9 +31,10 @@ function getPageMeta(lang: "en" | "cs") {
 export async function generateMetadata({
   params,
 }: {
-  params: { lang?: string };
+  params: Promise<{ lang?: string }>;
 }): Promise<Metadata> {
-  const lang = resolveLanguage(params.lang ?? "en");
+  const resolvedParams = await params;
+  const lang = resolveLanguage(resolvedParams?.lang ?? "en");
   const meta = getPageMeta(lang);
   return {
     title: meta.title,
@@ -38,12 +45,13 @@ export async function generateMetadata({
   };
 }
 
-export default function BlogListPage({
+export default async function BlogListPage({
   params,
 }: {
-  params: { lang?: string };
+  params: Promise<{ lang?: string }>;
 }) {
-  const lang = resolveLanguage(params.lang ?? "en");
+  const resolvedParams = await params;
+  const lang = resolveLanguage(resolvedParams?.lang ?? "en");
   const posts = getPostsByLang(lang);
   const locale = lang === "cs" ? "cs-CZ" : "en-US";
   const heading = lang === "cs" ? "Český deník" : "English journal";

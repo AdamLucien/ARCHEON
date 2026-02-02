@@ -37,11 +37,12 @@ export const dynamic = "force-static";
 export async function generateMetadata({
   params,
 }: {
-  params: { lang?: string; slug?: string };
+  params: Promise<{ lang?: string; slug?: string }>;
 }): Promise<Metadata> {
-  const langParam = normalizeLangParam(params.lang);
+  const resolvedParams = await params;
+  const langParam = normalizeLangParam(resolvedParams?.lang);
   const contentLang = mapToContentLang(langParam);
-  const slug = params.slug;
+  const slug = resolvedParams?.slug;
   if (!slug) {
     return { title: "ARCHEON journal — Not found" };
   }
@@ -63,11 +64,12 @@ export async function generateMetadata({
 export default async function BlogPostPage({
   params,
 }: {
-  params: { lang?: string; slug?: string };
+  params: Promise<{ lang?: string; slug?: string }>;
 }) {
-  const langParam = normalizeLangParam(params.lang);
+  const resolvedParams = await params;
+  const langParam = normalizeLangParam(resolvedParams?.lang);
   const contentLang = mapToContentLang(langParam);
-  const slug = params.slug;
+  const slug = resolvedParams?.slug;
   if (!slug) {
     notFound();
   }
