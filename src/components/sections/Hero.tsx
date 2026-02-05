@@ -15,7 +15,6 @@ type HeroContent = {
 };
 
 type HeroProps = {
-  eyebrow: string;
   content: HeroContent;
   onPrimaryCta: () => void;
   onSecondaryCta: () => void;
@@ -27,7 +26,6 @@ type HeroProps = {
 };
 
 export default function Hero({
-  eyebrow,
   content,
   onPrimaryCta,
   onSecondaryCta,

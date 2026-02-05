@@ -8,6 +8,8 @@ import { Section } from "../layout/Section";
 import { useCases } from "../../../content/useCases";
 import type { UseCaseDefinition } from "../../../content/useCases";
 import type { UseCaseId } from "../../../content/types";
+import { pillars } from "../../../content/pillars";
+import type { PillarId } from "../../../content/types";
 
 type UseCasesProps = {
   heading: string;
@@ -16,6 +18,8 @@ type UseCasesProps = {
   lang: "en" | "cz";
   sectionTag: string;
   srSummary: string;
+  pinnedPillarId: PillarId | null;
+  pinnedLabel: string;
 };
 
 type UseCaseNavProps = {
@@ -153,12 +157,18 @@ export default function UseCasesSection({
   lang,
   sectionTag,
   srSummary,
+  pinnedPillarId,
+  pinnedLabel,
 }: UseCasesProps) {
   const scenarios = useCases;
   const [activeId, setActiveId] = useState<UseCaseId>(scenarios[0]?.id ?? "antiFraud");
   const tabsRef = useRef<Array<HTMLButtonElement | null>>([]);
   const detailRef = useRef<HTMLDivElement>(null!);
   const hasMounted = useRef(false);
+  const pinnedPillar = useMemo(
+    () => pillars.find((pillar) => pillar.id === pinnedPillarId) ?? null,
+    [pinnedPillarId]
+  );
 
   const activeScenario = useMemo(
     () => scenarios.find((scenario) => scenario.id === activeId) ?? scenarios[0],
@@ -223,6 +233,14 @@ export default function UseCasesSection({
         <p data-reveal-item className="mt-4 max-w-[68ch] text-sm text-white/70 leading-7 md:text-base">
           {body}
         </p>
+        {pinnedPillar ? (
+          <p
+            data-testid="usecases-pinned-label"
+            className="mt-4 text-[11px] uppercase tracking-[0.24em] text-white/60 md:text-xs"
+          >
+            {pinnedLabel}: {pinnedPillar.names[lang]}
+          </p>
+        ) : null}
       </div>
       <div data-reveal-item className="mt-8 rounded-2xl border border-white/10 bg-white/[0.04] p-4 shadow-[0_20px_60px_rgba(0,0,0,0.35)] md:p-6 lg:p-8">
         <div className="flex flex-col gap-6 lg:flex-row">

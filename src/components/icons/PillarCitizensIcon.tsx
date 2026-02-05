@@ -1,3 +1,5 @@
+/* eslint-disable @next/next/no-img-element */
+
 import type { ImageIconProps } from "./icon-types";
 
 const ICON_SRC = "/brand/pillar_icons/citizens.svg";

@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { PillarId } from "../../content/types";
-import { pillars } from "../../content/pillars";
 import { useReducedMotionPref } from "./motion/useReducedMotionPref";
 import { useScrollSpy } from "./motion/useScrollSpy";
 import Navbar from "./layout/Navbar";
@@ -172,7 +171,6 @@ export default function PageShell({ lang, content }: PageShellProps) {
       />
       <main aria-label={content.a11y.mainLabel}>
         <Hero
-          eyebrow={content.wordmark}
           content={content.hero}
           onPrimaryCta={handleContactCta}
           onSecondaryCta={handleArchitectureCta}
@@ -213,6 +211,8 @@ export default function PageShell({ lang, content }: PageShellProps) {
           lang={lang}
           sectionTag={content.labels.useCasesTag}
           srSummary={content.a11y.useCasesSummary}
+          pinnedPillarId={pinnedPillarId}
+          pinnedLabel={content.pillars.connectionLabel}
         />
         <Implementation
           heading={content.implementation.heading}
