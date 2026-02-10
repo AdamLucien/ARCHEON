@@ -33,7 +33,7 @@ export const absoluteUrl = (path: string) => {
 export const HREFLANG_LINKS = {
   "en-US": absoluteUrl("/en"),
   "cs-CZ": absoluteUrl("/cz"),
-  "x-default": absoluteUrl("/"),
+  "x-default": absoluteUrl("/en"),
 };
 
 export type SeoPageKey = "root" | "en" | "cz";
