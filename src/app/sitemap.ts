@@ -5,6 +5,7 @@ export const dynamic = "force-static";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const entries: MetadataRoute.Sitemap = [
+    { url: absoluteUrl("/") },
     { url: absoluteUrl("/cz") },
     { url: absoluteUrl("/en") },
   ];
