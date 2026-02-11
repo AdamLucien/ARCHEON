@@ -1,5 +1,7 @@
+/* eslint-disable @next/next/no-img-element */
 import type { IconProps } from "../icons/icon-types";
-import WordmarkSvg from "../../../brand/archeon-wordmark.svg";
+
+const WORDMARK_SRC = "/brand/archeon-wordmark.svg";
 
 type WordmarkProps = IconProps & {
   title?: string;
@@ -8,9 +10,15 @@ type WordmarkProps = IconProps & {
 
 export default function Wordmark({ className, title, ariaLabel }: WordmarkProps) {
   const label = ariaLabel ?? title;
-  const ariaProps = label
-    ? { role: "img", "aria-label": label }
-    : { "aria-hidden": "true" as const };
+  const alt = label ?? "";
+  const ariaHidden = label ? undefined : true;
 
-  return <WordmarkSvg className={className} focusable="false" {...ariaProps} />;
+  return (
+    <img
+      src={WORDMARK_SRC}
+      className={className}
+      alt={alt}
+      aria-hidden={ariaHidden}
+    />
+  );
 }
