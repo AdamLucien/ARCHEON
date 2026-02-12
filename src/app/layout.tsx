@@ -50,15 +50,9 @@ export default async function RootLayout({
   const rawLang = typeof resolvedParams?.lang === "string" ? resolvedParams.lang : undefined;
   const pageKey = rawLang === "cz" ? "cz" : rawLang === "en" ? "en" : "root";
   const htmlLang = pageKey === "cz" ? "cs" : "en";
-  const jsonLd = buildJsonLd(pageKey);
   return (
     <html lang={htmlLang}>
       <body className="antialiased">
-        <script
-          type="application/ld+json"
-          id="archeon-jsonld"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
         {children}
       </body>
     </html>

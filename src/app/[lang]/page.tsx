@@ -10,6 +10,7 @@ import {
   HREFLANG_LINKS,
   absoluteUrl,
   OG_IMAGE,
+  buildJsonLd,
 } from "../../lib/seo";
 
 const languageList: LanguageCode[] = ["en", "cz"];
@@ -74,7 +75,15 @@ export default async function LangPage({ params }: PageProps<"/[lang]">) {
   const resolvedParams = await params;
   const lang = isLanguageCode(resolvedParams.lang) ? resolvedParams.lang : "en";
   const content = lang === "cz" ? cz : en;
+  const jsonLd = buildJsonLd(lang === "cz" ? "cz" : "en");
   return (
-    <PageShell lang={lang} content={content} />
+    <>
+      <script
+        type="application/ld+json"
+        id="archeon-jsonld"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <PageShell lang={lang} content={content} />
+    </>
   );
 }
