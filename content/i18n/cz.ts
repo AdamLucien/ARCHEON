@@ -168,6 +168,14 @@ export const cz = {
       },
     ],
   },
+  seo: {
+    heading: "Systémová dokumentace – přehled",
+    body: [
+      "ARCHEON (ΛRCHΞON) je kauzální inteligence na úrovni státu pro Českou republiku. Modeluje autoritu, dohled, toky a predikce jako jeden auditovatelný graf, aby byly rozhodovací řetězce dohledatelné.",
+      "Systém je navržen jako digitální dvojče s víceúrovňovou detailností (LOD‑0 až LOD‑4). To umožňuje makro plánování, simulace infrastruktury a analýzu dopadů politik bez ztráty odpovědnosti.",
+      "NOXIS je vrstva integrity narativů: mapuje strukturu informačních toků v měřítku systému a vyznačuje anomální vzory bez sledování jednotlivců.",
+    ],
+  },
   contact: {
     closingLine:
       "ΛRCHΞON dává státu paměť, zrak a schopnost vidět budoucnost.",

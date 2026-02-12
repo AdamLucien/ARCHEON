@@ -7,7 +7,7 @@ import {
   ROOT_DESCRIPTION,
   ROOT_TITLE,
   SITE_NAME,
-  absoluteUrl,
+  CANONICAL_ROOT,
   buildJsonLd,
 } from "../lib/seo";
 
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   title: ROOT_TITLE,
   description: ROOT_DESCRIPTION,
   alternates: {
-    canonical: absoluteUrl("/"),
+    canonical: CANONICAL_ROOT,
     languages: HREFLANG_LINKS,
   },
   openGraph: {
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     siteName: SITE_NAME,
     title: ROOT_TITLE,
     description: ROOT_DESCRIPTION,
-    url: absoluteUrl("/"),
+    url: CANONICAL_ROOT,
     locale: "en_US",
     alternateLocale: "cs_CZ",
     images: [

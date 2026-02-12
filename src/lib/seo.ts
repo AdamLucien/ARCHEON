@@ -23,6 +23,10 @@ export const SOFTWARE_APPLICATION_DESCRIPTION =
 
 export const OG_IMAGE = `${SITE_URL}/og.jpg`;
 
+export const CANONICAL_ROOT = "https://archeon.lucien.technology/";
+export const CANONICAL_EN = "https://archeon.lucien.technology/en";
+export const CANONICAL_CZ = "https://archeon.lucien.technology/cz";
+
 export const absoluteUrl = (path: string) => {
   if (path.startsWith("http")) {
     return path;
@@ -31,9 +35,9 @@ export const absoluteUrl = (path: string) => {
 };
 
 export const HREFLANG_LINKS = {
-  "en-US": absoluteUrl("/en"),
-  "cs-CZ": absoluteUrl("/cz"),
-  "x-default": absoluteUrl("/"),
+  "en-US": CANONICAL_EN,
+  "cs-CZ": CANONICAL_CZ,
+  "x-default": CANONICAL_ROOT,
 };
 
 export type SeoPageKey = "root" | "en" | "cz";
@@ -43,7 +47,7 @@ export const getPageMeta = (key: SeoPageKey) => {
     return {
       title: DEFAULT_TITLES.en,
       description: DEFAULT_DESCRIPTIONS.en,
-      url: absoluteUrl("/en"),
+      url: CANONICAL_EN,
       locale: "en_US",
       inLanguage: "en",
     };
@@ -52,7 +56,7 @@ export const getPageMeta = (key: SeoPageKey) => {
     return {
       title: DEFAULT_TITLES.cz,
       description: DEFAULT_DESCRIPTIONS.cz,
-      url: absoluteUrl("/cz"),
+      url: CANONICAL_CZ,
       locale: "cs_CZ",
       inLanguage: "cs",
     };
@@ -60,7 +64,7 @@ export const getPageMeta = (key: SeoPageKey) => {
   return {
     title: ROOT_TITLE,
     description: ROOT_DESCRIPTION,
-    url: absoluteUrl("/"),
+    url: CANONICAL_ROOT,
     locale: "en_US",
     inLanguage: "en",
   };

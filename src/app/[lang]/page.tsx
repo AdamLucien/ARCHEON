@@ -8,7 +8,8 @@ import {
   DEFAULT_TITLES,
   SITE_NAME,
   HREFLANG_LINKS,
-  absoluteUrl,
+  CANONICAL_CZ,
+  CANONICAL_EN,
   OG_IMAGE,
   buildJsonLd,
 } from "../../lib/seo";
@@ -33,7 +34,7 @@ export async function generateMetadata({
   const title = isCz ? DEFAULT_TITLES.cz : DEFAULT_TITLES.en;
   const description = isCz ? DEFAULT_DESCRIPTIONS.cz : DEFAULT_DESCRIPTIONS.en;
   const locale = isCz ? "cs_CZ" : "en_US";
-  const pageUrl = absoluteUrl(isCz ? "/cz" : "/en");
+  const pageUrl = isCz ? CANONICAL_CZ : CANONICAL_EN;
 
   return {
     title,

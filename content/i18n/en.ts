@@ -169,6 +169,14 @@ export const en = {
       },
     ],
   },
+  seo: {
+    heading: "System documentation overview",
+    body: [
+      "ARCHEON (ΛRCHΞON) is a state-scale causal intelligence stack for the Czech Republic. It models authority, oversight, flows, and predictions as one auditable graph so decisions can be traced and validated end to end.",
+      "The system is designed as a digital twin with multiple levels of detail (LOD‑0 to LOD‑4). This allows macro planning, infrastructure simulation, and policy impact analysis without breaking the chain of accountability.",
+      "NOXIS is the narrative‑integrity layer: it models the structure of information flows at system scale and flags anomaly patterns without tracking individuals.",
+    ],
+  },
   contact: {
     closingLine:
       "ΛRCHΞON gives the state memory, vision, and the ability to see the future.",

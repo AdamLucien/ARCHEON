@@ -13,6 +13,7 @@ import Pillars from "./sections/Pillars";
 import UseCases from "./sections/UseCases";
 import Implementation from "./sections/Implementation";
 import Contact from "./sections/Contact";
+import SeoSection from "./sections/Seo";
 import type { LanguageCode, LanguageContent } from "../../content/i18n/types";
 
 const sectionIds = ["architecture", "pillars", "use-cases", "implementation", "contact"];
@@ -222,6 +223,11 @@ export default function PageShell({ lang, content }: PageShellProps) {
           reduceMotion={reduceMotion}
           sectionTag={content.labels.implementationTag}
           srSummary={content.a11y.implementationSummary}
+        />
+        <SeoSection
+          heading={content.seo.heading}
+          body={content.seo.body}
+          sectionTag={content.labels.systemOverview}
         />
         <Contact
           closingLine={content.contact.closingLine}
