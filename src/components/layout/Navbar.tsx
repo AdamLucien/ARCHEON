@@ -1,12 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { useCallback, useEffect, useRef, useState } from "react";
 import clsx from "clsx";
-import type { Variants } from "framer-motion";
 import Wordmark from "../brand/Wordmark";
 import { useReducedMotionPref } from "../motion/useReducedMotionPref";
-import { createMenuVariant, createProgressVariant } from "../motion/variants";
 
 type SectionNav = {
   id: string;
@@ -55,11 +52,6 @@ export default function Navbar({
   const navRef = useRef<HTMLDivElement>(null!);
   const linkRefs = useRef<Record<string, HTMLAnchorElement | null>>({});
   const [underline, setUnderline] = useState({ left: 0, width: 0, ready: false });
-
-  const progressVariant: Variants = useMemo(
-    () => createProgressVariant(prefersReducedMotion),
-    [prefersReducedMotion]
-  );
 
   useEffect(() => {
     if (!menuOpen) {
@@ -155,13 +147,13 @@ export default function Navbar({
   return (
     <header className="sticky top-0 z-50 border-b border-border/60 bg-[rgba(10,10,10,0.96)] shadow-[0_10px_30px_rgba(0,0,0,0.35)] relative">
       <div className="pointer-events-none absolute inset-x-0 top-0 z-0 h-px bg-[rgba(255,255,255,0.2)]">
-        <motion.span
+        <span
           className="block h-px w-full origin-left bg-foreground"
-          style={{ transformOrigin: "left" }}
-          initial="visible"
-          animate="visible"
-          variants={progressVariant}
-          custom={progress}
+          style={{
+            transformOrigin: "left",
+            transform: `scaleX(${progress})`,
+            transition: prefersReducedMotion ? "none" : "transform 0.4s cubic-bezier(0.33, 1, 0.68, 1)",
+          }}
         />
       </div>
       <nav
@@ -269,73 +261,66 @@ export default function Navbar({
           </button>
         </div>
       </nav>
-      <AnimatePresence>
-        {menuOpen && (
-          <motion.div
-            key="mobile-menu"
-            className="fixed inset-0 z-40 bg-[rgba(18,18,18,0.95)]"
-            initial="hidden"
-            animate="visible"
-            exit="hidden"
-            variants={createMenuVariant(prefersReducedMotion)}
-            ref={menuRef}
-            role="dialog"
-            aria-modal="true"
-            id="mobile-menu"
-          >
-            <div className="flex h-full flex-col gap-8 px-6 pt-10">
-              <div className="flex items-center justify-between">
-                <button
-                  onClick={() => setMenuOpen(false)}
-                  className="hoverable text-[var(--text-label)] font-semibold uppercase tracking-[var(--tracking-label)] text-secondary"
-                >
-                  {closeLabel}
-                </button>
-              </div>
-              <div className="flex flex-col gap-6 text-xl font-semibold uppercase tracking-[var(--tracking-label)] text-foreground">
-                {navSections.map((section) => (
-                  <a
-                    key={section.id}
-                    href={`#${section.id}`}
-                    onClick={() => setMenuOpen(false)}
-                  >
-                    {section.label}
-                  </a>
-                ))}
-              </div>
-              <div
-                className="flex flex-col gap-3 text-[var(--text-label)] font-semibold uppercase tracking-[var(--tracking-label)] text-secondary"
-                role="group"
-                aria-label={languageLabel}
-              >
-                {(["cz", "en"] as const).map((langCode) => (
-                  <button
-                    key={langCode}
-                    onClick={() => toggleLang(langCode)}
-                    className={clsx(
-                      "text-left",
-                      currentLang === langCode ? "text-foreground" : "text-secondary"
-                    )}
-                    aria-pressed={currentLang === langCode}
-                  >
-                    {langCode.toUpperCase()}
-                  </button>
-                ))}
-              </div>
+      {menuOpen ? (
+        <div
+          className="fixed inset-0 z-40 bg-[rgba(18,18,18,0.95)]"
+          ref={menuRef}
+          role="dialog"
+          aria-modal="true"
+          id="mobile-menu"
+        >
+          <div className="flex h-full flex-col gap-8 px-6 pt-10">
+            <div className="flex items-center justify-between">
               <button
-                onClick={() => {
-                  onCta();
-                  setMenuOpen(false);
-                }}
-                aria-label={navCtaAriaLabel}
-                className="hoverable mt-auto rounded-[var(--radius-soft)] border border-border/60 px-6 py-3 text-[var(--text-label)] font-semibold uppercase tracking-[var(--tracking-label)] text-foreground"
+                onClick={() => setMenuOpen(false)}
+                className="hoverable text-[var(--text-label)] font-semibold uppercase tracking-[var(--tracking-label)] text-secondary"
               >
-                {navCtaLabel}
+                {closeLabel}
               </button>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            <div className="flex flex-col gap-6 text-xl font-semibold uppercase tracking-[var(--tracking-label)] text-foreground">
+              {navSections.map((section) => (
+                <a
+                  key={section.id}
+                  href={`#${section.id}`}
+                  onClick={() => setMenuOpen(false)}
+                >
+                  {section.label}
+                </a>
+              ))}
+            </div>
+            <div
+              className="flex flex-col gap-3 text-[var(--text-label)] font-semibold uppercase tracking-[var(--tracking-label)] text-secondary"
+              role="group"
+              aria-label={languageLabel}
+            >
+              {(["cz", "en"] as const).map((langCode) => (
+                <button
+                  key={langCode}
+                  onClick={() => toggleLang(langCode)}
+                  className={clsx(
+                    "text-left",
+                    currentLang === langCode ? "text-foreground" : "text-secondary"
+                  )}
+                  aria-pressed={currentLang === langCode}
+                >
+                  {langCode.toUpperCase()}
+                </button>
+              ))}
+            </div>
+            <button
+              onClick={() => {
+                onCta();
+                setMenuOpen(false);
+              }}
+              aria-label={navCtaAriaLabel}
+              className="hoverable mt-auto rounded-[var(--radius-soft)] border border-border/60 px-6 py-3 text-[var(--text-label)] font-semibold uppercase tracking-[var(--tracking-label)] text-foreground"
+            >
+              {navCtaLabel}
+            </button>
+          </div>
+        </div>
+      ) : null}
     </header>
   );
 }

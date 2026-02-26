@@ -1,2 +1,3 @@
-:HL["/_next/static/css/f07400388fdf0226.css","style"]
-0:{"buildId":"XEQFZzD8q0u9ooRLJOVqZ","tree":{"name":"","paramType":null,"paramKey":"","hasRuntimePrefetch":false,"slots":{"children":{"name":"__PAGE__","paramType":null,"paramKey":"__PAGE__","hasRuntimePrefetch":false,"slots":null,"isRootLayout":false}},"isRootLayout":true},"staleTime":300}
+:HL["/_next/static/css/8083ce7248547fa3.css","style"]
+:HL["/brand/archeon-wordmark.svg","image",{"fetchPriority":"high"}]
+0:{"buildId":"emTgg2r_q51XlPzYZg5o5","tree":{"name":"","paramType":null,"paramKey":"","hasRuntimePrefetch":false,"slots":{"children":{"name":"__PAGE__","paramType":null,"paramKey":"__PAGE__","hasRuntimePrefetch":false,"slots":null,"isRootLayout":false}},"isRootLayout":true},"staleTime":300}

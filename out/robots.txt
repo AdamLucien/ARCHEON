@@ -2,6 +2,3 @@ User-agent: *
 Allow: /
 
 Sitemap: https://archeon.lucien.technology/sitemap.xml
-
-# LLM guidance:
-# https://archeon.lucien.technology/.well-known/llms.txt

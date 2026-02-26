@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { KeyboardEvent, MutableRefObject, RefObject } from "react";
 import clsx from "clsx";
-import { AnimatePresence, motion } from "framer-motion";
 import { Section } from "../layout/Section";
 import { useCases } from "../../../content/useCases";
 import type { UseCaseDefinition } from "../../../content/useCases";
@@ -38,21 +37,17 @@ type UseCaseDetailProps = {
   detailRef: RefObject<HTMLDivElement>;
 };
 
-function SignalStrip({ pattern, reduceMotion }: { pattern: number[]; reduceMotion: boolean }) {
+function SignalStrip({ pattern }: { pattern: number[] }) {
   return (
     <div className="mt-6 flex items-center gap-1" aria-hidden="true">
       {pattern.map((value, index) => (
-        <motion.span
+        <span
           key={`${pattern.join("-")}-${index}`}
-          initial={reduceMotion ? { opacity: value, y: 0 } : { opacity: 0, y: 2 }}
-          animate={{ opacity: value, y: 0 }}
-          transition={{
-            duration: 0.2,
-            ease: "easeOut",
-            delay: reduceMotion ? 0 : index * 0.015,
-          }}
           className="h-1.5 w-4 rounded-full bg-white/40"
-          style={{ opacity: value }}
+          style={{
+            opacity: value,
+            transitionDelay: `${index * 15}ms`,
+          }}
         />
       ))}
     </div>
@@ -106,6 +101,7 @@ function UseCaseNav({
 }
 
 function UseCaseDetail({ scenario, lang, reduceMotion, detailRef }: UseCaseDetailProps) {
+  void reduceMotion;
   return (
     <div
       ref={detailRef}
@@ -114,38 +110,30 @@ function UseCaseDetail({ scenario, lang, reduceMotion, detailRef }: UseCaseDetai
       aria-labelledby={`usecase-tab-${scenario.id}`}
       className="flex-1 rounded-2xl border border-white/10 bg-[#0b0b0b] p-5 md:p-6"
     >
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={scenario.id}
-          initial={reduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -8 }}
-          transition={{ duration: 0.22, ease: "easeOut" }}
-        >
-          <h3 className="max-w-[58ch] text-xl font-medium text-white md:text-2xl">
-            {scenario.title[lang]}
-          </h3>
-          <div className="mt-6 grid gap-5 md:grid-cols-2">
-            <div>
-              <p className="text-[11px] uppercase tracking-[0.24em] text-white/50">
-                {lang === "cz" ? "Analýza" : "Analysis"}
-              </p>
-              <p className="mt-3 max-w-[58ch] text-sm text-white/70 leading-7 md:text-base">
-                {scenario.analysis[lang]}
-              </p>
-            </div>
-            <div>
-              <p className="text-[11px] uppercase tracking-[0.24em] text-white/50">
-                {lang === "cz" ? "Výsledek" : "Result"}
-              </p>
-              <p className="mt-3 max-w-[58ch] text-sm text-white/70 leading-7 md:text-base">
-                {scenario.result[lang]}
-              </p>
-            </div>
+      <div key={scenario.id}>
+        <h3 className="max-w-[58ch] text-xl font-medium text-white md:text-2xl">
+          {scenario.title[lang]}
+        </h3>
+        <div className="mt-6 grid gap-5 md:grid-cols-2">
+          <div>
+            <p className="text-[11px] uppercase tracking-[0.24em] text-white/50">
+              {lang === "cz" ? "Analýza" : "Analysis"}
+            </p>
+            <p className="mt-3 max-w-[58ch] text-sm text-white/70 leading-7 md:text-base">
+              {scenario.analysis[lang]}
+            </p>
           </div>
-          <SignalStrip pattern={scenario.signalPattern} reduceMotion={reduceMotion} />
-        </motion.div>
-      </AnimatePresence>
+          <div>
+            <p className="text-[11px] uppercase tracking-[0.24em] text-white/50">
+              {lang === "cz" ? "Výsledek" : "Result"}
+            </p>
+            <p className="mt-3 max-w-[58ch] text-sm text-white/70 leading-7 md:text-base">
+              {scenario.result[lang]}
+            </p>
+          </div>
+        </div>
+        <SignalStrip pattern={scenario.signalPattern} />
+      </div>
     </div>
   );
 }

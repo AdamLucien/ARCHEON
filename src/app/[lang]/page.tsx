@@ -1,6 +1,9 @@
 import { cz } from "../../../content/i18n/cz";
 import { en } from "../../../content/i18n/en";
 import PageShell from "../../components/PageShell";
+import Hero from "../../components/sections/Hero";
+import SeoSection from "../../components/sections/Seo";
+import Contact from "../../components/sections/Contact";
 import type { LanguageCode } from "../../../content/i18n/types";
 import type { Metadata } from "next";
 import {
@@ -84,7 +87,38 @@ export default async function LangPage({ params }: PageProps<"/[lang]">) {
         id="archeon-jsonld"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <PageShell lang={lang} content={content} />
+      <PageShell
+        lang={lang}
+        content={content}
+        heroSlot={(
+          <Hero
+            content={content.hero}
+            srSummary={content.a11y.heroSummary}
+            srDisclaimer={content.a11y.notGame}
+            wordmarkAriaLabel={content.a11y.wordmarkLabel}
+            primaryCtaAriaLabel={content.a11y.navCtaLabel}
+          />
+        )}
+        seoSlot={(
+          <SeoSection
+            heading={content.seo.heading}
+            body={content.seo.body}
+            sectionTag={content.labels.systemOverview}
+          />
+        )}
+        contactSlot={(
+          <Contact
+            closingLine={content.contact.closingLine}
+            subline={content.contact.subline}
+            cta={content.contact.cta}
+            ctaNote={content.contact.ctaNote}
+            email={content.contact.email}
+            sectionTag={content.labels.contactTag}
+            srSummary={content.a11y.contactSummary}
+            ctaAriaLabel={content.a11y.contactCtaLabel}
+          />
+        )}
+      />
     </>
   );
 }

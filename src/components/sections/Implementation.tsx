@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { KeyboardEvent, MutableRefObject, RefObject } from "react";
 import clsx from "clsx";
-import { AnimatePresence, motion } from "framer-motion";
 import { Section } from "../layout/Section";
 
 export type ImplementationStep = {
@@ -44,21 +43,17 @@ type DetailProps = {
   detailRef: RefObject<HTMLDivElement>;
 };
 
-function SignalStrip({ pattern, reduceMotion }: { pattern: number[]; reduceMotion: boolean }) {
+function SignalStrip({ pattern }: { pattern: number[] }) {
   return (
     <div className="mt-6 flex items-center gap-1" aria-hidden="true">
       {pattern.map((value, index) => (
-        <motion.span
+        <span
           key={`${pattern.join("-")}-${index}`}
-          initial={reduceMotion ? { opacity: value, y: 0 } : { opacity: 0, y: 2 }}
-          animate={{ opacity: value, y: 0 }}
-          transition={{
-            duration: 0.2,
-            ease: "easeOut",
-            delay: reduceMotion ? 0 : index * 0.015,
-          }}
           className="h-1.5 w-4 rounded-full bg-white/40"
-          style={{ opacity: value }}
+          style={{
+            opacity: value,
+            transitionDelay: `${index * 15}ms`,
+          }}
         />
       ))}
     </div>
@@ -116,6 +111,7 @@ function ImplementationSteps({ steps, activeId, onSelect, onKeyDown, tabsRef }: 
 }
 
 function ImplementationDetail({ step, labels, reduceMotion, detailRef }: DetailProps) {
+  void reduceMotion;
   return (
     <div
       ref={detailRef}
@@ -124,34 +120,26 @@ function ImplementationDetail({ step, labels, reduceMotion, detailRef }: DetailP
       aria-labelledby={`implementation-tab-${step.id}`}
       className="rounded-2xl border border-white/10 bg-[#0b0b0b] p-6 md:p-7"
     >
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={step.id}
-          initial={reduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 6 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -6 }}
-          transition={{ duration: 0.22, ease: "easeOut" }}
-        >
-          <div className="grid gap-6 md:grid-cols-2">
-            <div>
-              <p className="text-[11px] uppercase tracking-[0.24em] text-white/50">{labels.what}</p>
-              <ul className="mt-4 space-y-2 text-sm text-white/70 leading-7 md:text-base">
-                {step.what.map((item) => (
-                  <li key={item} className="flex items-start gap-2">
-                    <span className="mt-2 h-1.5 w-1.5 rounded-full bg-white/30" aria-hidden="true" />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <p className="text-[11px] uppercase tracking-[0.24em] text-white/50">{labels.why}</p>
-              <p className="mt-4 text-sm text-white/70 leading-7 md:text-base">{step.why}</p>
-              <SignalStrip pattern={step.signalPattern} reduceMotion={reduceMotion} />
-            </div>
+      <div key={step.id}>
+        <div className="grid gap-6 md:grid-cols-2">
+          <div>
+            <p className="text-[11px] uppercase tracking-[0.24em] text-white/50">{labels.what}</p>
+            <ul className="mt-4 space-y-2 text-sm text-white/70 leading-7 md:text-base">
+              {step.what.map((item) => (
+                <li key={item} className="flex items-start gap-2">
+                  <span className="mt-2 h-1.5 w-1.5 rounded-full bg-white/30" aria-hidden="true" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
           </div>
-        </motion.div>
-      </AnimatePresence>
+          <div>
+            <p className="text-[11px] uppercase tracking-[0.24em] text-white/50">{labels.why}</p>
+            <p className="mt-4 text-sm text-white/70 leading-7 md:text-base">{step.why}</p>
+            <SignalStrip pattern={step.signalPattern} />
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

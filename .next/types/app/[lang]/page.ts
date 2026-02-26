@@ -1,4 +1,4 @@
-// File: /Users/adamkarllucien/archeon_web_github/ARCHEON/src/app/[lang]/page.tsx
+// File: /Users/adamkarllucien/Downloads/WEBY/ARCHEON/src/app/[lang]/page.tsx
 import * as entry from '../../../../src/app/[lang]/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

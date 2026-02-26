@@ -12,5 +12,5 @@ export default function PillarCitizensIcon({
   const label = ariaLabel ?? alt ?? "";
   const ariaProps = label ? { "aria-label": label } : { "aria-hidden": "true" as const };
 
-  return <img src={ICON_SRC} alt={label} {...props} {...ariaProps} />;
+  return <img src={ICON_SRC} alt={label} width={24} height={24} loading="lazy" decoding="async" fetchPriority="low" {...props} {...ariaProps} />;
 }

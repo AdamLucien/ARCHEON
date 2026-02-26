@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import clsx from "clsx";
-import { useInView } from "framer-motion";
 import { Section } from "../layout/Section";
 
 type ArchitectureBlock = {
@@ -148,13 +147,23 @@ function ArchitectureBlockItem({
   onActive: (id: ArchitectureBlock["id"]) => void;
 }) {
   const ref = useRef<HTMLDivElement>(null!);
-  const isInView = useInView(ref, { amount: 0.5, margin: "-10% 0px -60% 0px" });
 
   useEffect(() => {
-    if (isInView) {
-      onActive(block.id);
+    if (typeof window === "undefined" || !ref.current) {
+      return;
     }
-  }, [block.id, isInView, onActive]);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (entry?.isIntersecting && entry.intersectionRatio >= 0.5) {
+          onActive(block.id);
+        }
+      },
+      { threshold: [0.5], rootMargin: "-10% 0px -60% 0px" }
+    );
+    observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, [block.id, onActive]);
 
   return (
     <div

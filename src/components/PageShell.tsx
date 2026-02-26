@@ -7,23 +7,31 @@ import { useReducedMotionPref } from "./motion/useReducedMotionPref";
 import { useScrollSpy } from "./motion/useScrollSpy";
 import Navbar from "./layout/Navbar";
 import Footer from "./layout/Footer";
-import Hero from "./sections/Hero";
 import Architecture from "./sections/Architecture";
 import Pillars from "./sections/Pillars";
 import UseCases from "./sections/UseCases";
 import Implementation from "./sections/Implementation";
-import Contact from "./sections/Contact";
-import SeoSection from "./sections/Seo";
 import type { LanguageCode, LanguageContent } from "../../content/i18n/types";
+import type { ReactNode } from "react";
+import RumVitals from "./RumVitals";
 
 const sectionIds = ["architecture", "pillars", "use-cases", "implementation", "contact"];
 
 type PageShellProps = {
   lang: LanguageCode;
   content: LanguageContent;
+  heroSlot: ReactNode;
+  seoSlot: ReactNode;
+  contactSlot: ReactNode;
 };
 
-export default function PageShell({ lang, content }: PageShellProps) {
+export default function PageShell({
+  lang,
+  content,
+  heroSlot,
+  seoSlot,
+  contactSlot,
+}: PageShellProps) {
   const reduceMotion = useReducedMotionPref();
   const router = useRouter();
   const [progress, setProgress] = useState(0);
@@ -141,8 +149,6 @@ export default function PageShell({ lang, content }: PageShellProps) {
     scrollToSection("contact");
   };
 
-  const handleArchitectureCta = () => scrollToSection("architecture");
-
   const handleLanguageChange = (targetLang: LanguageCode) => {
     if (targetLang === lang) {
       return;
@@ -153,6 +159,7 @@ export default function PageShell({ lang, content }: PageShellProps) {
 
   return (
     <>
+      <RumVitals lang={lang} />
       <Navbar
         navSections={content.nav.sections}
         activeSection={activeSection}
@@ -171,16 +178,7 @@ export default function PageShell({ lang, content }: PageShellProps) {
         wordmarkLabel={content.a11y.wordmarkLabel}
       />
       <main aria-label={content.a11y.mainLabel}>
-        <Hero
-          content={content.hero}
-          onPrimaryCta={handleContactCta}
-          onSecondaryCta={handleArchitectureCta}
-          reduceMotion={reduceMotion}
-          srSummary={content.a11y.heroSummary}
-          srDisclaimer={content.a11y.notGame}
-          wordmarkAriaLabel={content.a11y.wordmarkLabel}
-          primaryCtaAriaLabel={content.a11y.navCtaLabel}
-        />
+        {heroSlot}
         <Architecture
           heading={content.architecture.heading}
           body={content.architecture.body}
@@ -224,22 +222,8 @@ export default function PageShell({ lang, content }: PageShellProps) {
           sectionTag={content.labels.implementationTag}
           srSummary={content.a11y.implementationSummary}
         />
-        <SeoSection
-          heading={content.seo.heading}
-          body={content.seo.body}
-          sectionTag={content.labels.systemOverview}
-        />
-        <Contact
-          closingLine={content.contact.closingLine}
-          subline={content.contact.subline}
-          cta={content.contact.cta}
-          ctaNote={content.contact.ctaNote}
-          email={content.contact.email}
-          reduceMotion={reduceMotion}
-          sectionTag={content.labels.contactTag}
-          srSummary={content.a11y.contactSummary}
-          ctaAriaLabel={content.a11y.contactCtaLabel}
-        />
+        {seoSlot}
+        {contactSlot}
       </main>
       <Footer line={content.footer.line} ariaLabel={content.a11y.footerLabel} />
     </>

@@ -53,7 +53,11 @@ export default function Page() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <div className="section-container flex min-h-screen flex-col items-center justify-center gap-8 py-16 text-center">
-        <Wordmark className="h-20 w-auto md:h-28 lg:h-32" ariaLabel="ΛRCHΞON – government operating system" />
+        <Wordmark
+          className="h-20 w-auto md:h-28 lg:h-32"
+          ariaLabel="ΛRCHΞON – government operating system"
+          priority
+        />
         <div className="max-w-[60ch]">
           <h1 className="text-2xl font-medium tracking-tight md:text-3xl lg:text-4xl">
             {ROOT_TITLE}
