@@ -1,6 +1,21 @@
 import type { Metadata, Viewport } from "next";
+import { Roboto, Sora } from "next/font/google";
 import "./globals.css";
 import { AUTHOR_NAME, SITE_NAME, SITE_URL, buildJsonLd } from "../lib/seo";
+
+const roboto = Roboto({
+  subsets: ["latin", "latin-ext"],
+  weight: ["400", "500", "700"],
+  display: "swap",
+  variable: "--font-roboto",
+});
+
+const sora = Sora({
+  subsets: ["latin", "latin-ext"],
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
+  variable: "--font-sora",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -52,7 +67,7 @@ export default async function RootLayout({
   const htmlLang = pageKey === "cz" ? "cs" : "en";
   return (
     <html lang={htmlLang}>
-      <body className="antialiased">
+      <body className={`antialiased ${roboto.variable} ${sora.variable}`}>
         {children}
       </body>
     </html>
