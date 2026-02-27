@@ -1,16 +1,20 @@
-/* eslint-disable @next/next/no-img-element */
+import type { IconProps } from "./icon-types";
 
-import type { ImageIconProps } from "./icon-types";
-
-const ICON_SRC = "/brand/pillar_icons/family.svg";
-
-export default function PillarFamilyIcon({
-  alt,
-  "aria-label": ariaLabel,
-  ...props
-}: ImageIconProps) {
-  const label = ariaLabel ?? alt ?? "";
-  const ariaProps = label ? { "aria-label": label } : { "aria-hidden": "true" as const };
-
-  return <img src={ICON_SRC} alt={label} width={24} height={24} loading="lazy" decoding="async" fetchPriority="low" {...props} {...ariaProps} />;
+export default function PillarFamilyIcon(props: IconProps) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.8}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <circle cx="8" cy="9" r="2.5" />
+      <circle cx="16" cy="9" r="2.5" />
+      <circle cx="12" cy="13" r="2" />
+      <path d="M3.5 19.5c1.1-2.3 2.6-3.5 4.5-3.5M20.5 19.5c-1.1-2.3-2.6-3.5-4.5-3.5M8.5 19.5c1-1.7 2.2-2.5 3.5-2.5s2.5.8 3.5 2.5" />
+    </svg>
+  );
 }

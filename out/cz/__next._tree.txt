@@ -4,4 +4,4 @@
 :HL["/_next/static/media/c5f10e9e72d35c52-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 :HL["/_next/static/css/036683c206a21e79.css","style"]
 :HL["/brand/archeon-wordmark.svg","image",{"fetchPriority":"high"}]
-0:{"buildId":"iW9svrw5CxLK0ycg5nt4S","tree":{"name":"","paramType":null,"paramKey":"","hasRuntimePrefetch":false,"slots":{"children":{"name":"lang","paramType":"d","paramKey":"cz","hasRuntimePrefetch":false,"slots":{"children":{"name":"__PAGE__","paramType":null,"paramKey":"__PAGE__","hasRuntimePrefetch":false,"slots":null,"isRootLayout":false}},"isRootLayout":false}},"isRootLayout":true},"staleTime":300}
+0:{"buildId":"7l23dj1b23D_4OIdhpHAf","tree":{"name":"","paramType":null,"paramKey":"","hasRuntimePrefetch":false,"slots":{"children":{"name":"lang","paramType":"d","paramKey":"cz","hasRuntimePrefetch":false,"slots":{"children":{"name":"__PAGE__","paramType":null,"paramKey":"__PAGE__","hasRuntimePrefetch":false,"slots":null,"isRootLayout":false}},"isRootLayout":false}},"isRootLayout":true},"staleTime":300}

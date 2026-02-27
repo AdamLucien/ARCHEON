@@ -1,16 +1,18 @@
-/* eslint-disable @next/next/no-img-element */
+import type { IconProps } from "./icon-types";
 
-import type { ImageIconProps } from "./icon-types";
-
-const ICON_SRC = "/brand/pillar_icons/responsibility.svg";
-
-export default function PillarResponsibilityIcon({
-  alt,
-  "aria-label": ariaLabel,
-  ...props
-}: ImageIconProps) {
-  const label = ariaLabel ?? alt ?? "";
-  const ariaProps = label ? { "aria-label": label } : { "aria-hidden": "true" as const };
-
-  return <img src={ICON_SRC} alt={label} width={24} height={24} loading="lazy" decoding="async" fetchPriority="low" {...props} {...ariaProps} />;
+export default function PillarResponsibilityIcon(props: IconProps) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.8}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <path d="M12 3.5 5.5 6v5.5c0 4.2 2.6 7.5 6.5 9 3.9-1.5 6.5-4.8 6.5-9V6L12 3.5Z" />
+      <path d="m9.5 12.5 1.8 1.8 3.2-3.2" />
+    </svg>
+  );
 }

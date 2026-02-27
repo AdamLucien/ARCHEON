@@ -1,16 +1,19 @@
-/* eslint-disable @next/next/no-img-element */
+import type { IconProps } from "./icon-types";
 
-import type { ImageIconProps } from "./icon-types";
-
-const ICON_SRC = "/brand/pillar_icons/resources.svg";
-
-export default function PillarResourcesIcon({
-  alt,
-  "aria-label": ariaLabel,
-  ...props
-}: ImageIconProps) {
-  const label = ariaLabel ?? alt ?? "";
-  const ariaProps = label ? { "aria-label": label } : { "aria-hidden": "true" as const };
-
-  return <img src={ICON_SRC} alt={label} width={24} height={24} loading="lazy" decoding="async" fetchPriority="low" {...props} {...ariaProps} />;
+export default function PillarResourcesIcon(props: IconProps) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.8}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <rect x="4" y="4" width="16" height="4" rx="1.5" />
+      <rect x="4" y="10" width="16" height="4" rx="1.5" />
+      <rect x="4" y="16" width="16" height="4" rx="1.5" />
+    </svg>
+  );
 }

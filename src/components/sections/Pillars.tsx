@@ -15,7 +15,7 @@ import PillarFamilyIcon from "../icons/PillarFamilyIcon";
 import PillarCommunicationIcon from "../icons/PillarCommunicationIcon";
 import PillarInvestmentsIcon from "../icons/PillarInvestmentsIcon";
 import PillarResponsibilityIcon from "../icons/PillarResponsibilityIcon";
-import type { ImageIconProps } from "../icons/icon-types";
+import type { IconProps } from "../icons/icon-types";
 
 type Language = "en" | "cz";
 
@@ -35,7 +35,7 @@ export type PillarsProps = {
   srSummary: string;
 };
 
-const icons: Record<PillarDefinition["id"], React.ComponentType<ImageIconProps>> = {
+const icons: Record<PillarDefinition["id"], React.ComponentType<IconProps>> = {
   resources: PillarResourcesIcon,
   services: PillarServicesIcon,
   citizens: PillarCitizensIcon,
@@ -130,7 +130,7 @@ export default function SevenPillarsSection({
             const strongAccent = hexToRgba(pillar.color, 0.78);
             const glowAccent = hexToRgba(pillar.color, 0.22);
             const borderColor = isActive || isRelated ? strongAccent : baseAccent;
-            const iconColor = isActive || isRelated ? strongAccent : baseAccent;
+            const iconColor = pillar.color;
             const overlayOpacity = isActive ? 0.22 : isHovered ? 0.18 : isRelated ? 0.12 : 0;
             const edgeOpacity = isActive ? 0.6 : isHovered ? 0.45 : isRelated ? 0.3 : 0;
 
@@ -175,7 +175,7 @@ export default function SevenPillarsSection({
                     className="inline-flex h-11 w-11 items-center justify-center rounded-[14px] border border-white/5 bg-[#0c0c0c]"
                     style={{ color: iconColor }}
                   >
-                    <Icon className="h-6 w-6" alt={pillar.names[lang]} />
+                    <Icon className="h-6 w-6" aria-label={pillar.names[lang]} />
                   </span>
                   {pillar.id === "communication" ? (
                     <span
