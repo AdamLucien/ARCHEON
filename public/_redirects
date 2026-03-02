@@ -1,0 +1,13 @@
+# Canonical host + HTTPS (Netlify-compatible; Cloudflare Pages may require Redirect Rules for host-level redirects)
+http://www.archeon.lucien.technology/* https://archeon.lucien.technology/:splat 301!
+https://www.archeon.lucien.technology/* https://archeon.lucien.technology/:splat 301!
+http://archeon.lucien.technology/* https://archeon.lucien.technology/:splat 301!
+
+# Canonical URL shape (avoid duplicate .html/trailing slash variants)
+/index.html / 301!
+/en.html /en 301!
+/cz.html /cz 301!
+/en/index.html /en 301!
+/cz/index.html /cz 301!
+/en/ /en 301!
+/cz/ /cz 301!
